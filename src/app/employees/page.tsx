@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { Fragment, useState, useCallback } from 'react';
 import { employees as initialEmployees, areas, allocations } from '@/lib/mock-data';
 import {
-  Plus, Search, Pencil, Trash2, X, Check, AlertTriangle,
+  Plus, Search, Pencil, Trash2, X, Check, AlertTriangle, Layers, List,
 } from 'lucide-react';
 
 type Position = 'All' | 'Coordinator' | 'Cleaner';
@@ -173,6 +173,8 @@ export default function EmployeesPage() {
   const [employees, setEmployees] = useState(initialEmployees);
   const [query, setQuery] = useState('');
   const [positionFilter, setPositionFilter] = useState<Position>('All');
+  const [allocationFilter, setAllocationFilter] = useState<string>('All');
+  const [grouped, setGrouped] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | undefined>();
   const [deletingEmployee, setDeletingEmployee] = useState<Employee | undefined>();
@@ -218,13 +220,73 @@ export default function EmployeesPage() {
 
   // Filtering
   const filtered = employees.filter((e) => {
+    const area = areas.find((a) => a.id === e.areaId);
     const matchesQuery = e.fullname.toLowerCase().includes(query.toLowerCase());
     const matchesPosition = positionFilter === 'All' || e.position === positionFilter;
-    return matchesQuery && matchesPosition;
+    const matchesAllocation = allocationFilter === 'All' || area?.allocationId === allocationFilter;
+    return matchesQuery && matchesPosition && matchesAllocation;
   });
 
   const coordinators = employees.filter((e) => e.position === 'Coordinator').length;
   const cleaners = employees.filter((e) => e.position === 'Cleaner').length;
+
+  // Group filtered employees by allocation (region), sorted by region name
+  const groups = [...allocations]
+    .sort((a, b) => a.regionName.localeCompare(b.regionName))
+    .map((alloc) => ({
+      allocation: alloc,
+      employees: filtered.filter((e) => {
+        const area = areas.find((a) => a.id === e.areaId);
+        return area?.allocationId === alloc.id;
+      }),
+    }))
+    .filter((g) => g.employees.length > 0);
+
+  const renderEmployeeRow = (e: Employee) => {
+    const area = areas.find((a) => a.id === e.areaId);
+    const allocation = allocations.find((a) => a.id === area?.allocationId);
+    return (
+      <tr key={e.id} className="hover:bg-muted/30 transition group">
+        <td className="px-5 py-3.5">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground shrink-0">
+              {e.fullname.split(' ').map((n) => n[0]).join('').slice(0, 2)}
+            </div>
+            <span className="font-medium text-foreground">{e.fullname}</span>
+          </div>
+        </td>
+        <td className="px-5 py-3.5">
+          <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
+            e.position === 'Coordinator'
+              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+              : 'bg-muted text-muted-foreground'
+          }`}>
+            {e.position}
+          </span>
+        </td>
+        <td className="px-5 py-3.5 text-muted-foreground">{area?.name ?? '—'}</td>
+        <td className="px-5 py-3.5 text-muted-foreground">{allocation?.regionName ?? '—'}</td>
+        <td className="px-5 py-3.5">
+          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+            <button
+              onClick={() => setEditingEmployee(e)}
+              className="p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition"
+              title="Edit employee"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setDeletingEmployee(e)}
+              className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-muted-foreground hover:text-red-600 dark:hover:text-red-400 transition"
+              title="Delete employee"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <main className="flex-1 p-4 md:p-8">
@@ -282,6 +344,32 @@ export default function EmployeesPage() {
               </button>
             ))}
           </div>
+          <select
+            value={allocationFilter}
+            onChange={(e) => setAllocationFilter(e.target.value)}
+            className="rounded-lg border border-input bg-background px-3 py-2 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            <option value="All">All regions</option>
+            {[...allocations]
+              .sort((a, b) => a.regionName.localeCompare(b.regionName))
+              .map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.regionName} — {a.cotCoordinatorName}
+                </option>
+              ))}
+          </select>
+          <button
+            onClick={() => setGrouped((g) => !g)}
+            title={grouped ? 'Show flat list' : 'Group by region / allocation'}
+            className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-medium transition ${
+              grouped
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'border-border bg-background text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            {grouped ? <Layers className="w-3.5 h-3.5" /> : <List className="w-3.5 h-3.5" />}
+            {grouped ? 'Grouped' : 'Group by region'}
+          </button>
         </div>
 
         {/* Table */}
@@ -298,51 +386,25 @@ export default function EmployeesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filtered.map((e) => {
-                  const area = areas.find((a) => a.id === e.areaId);
-                  const allocation = allocations.find((a) => a.id === area?.allocationId);
-                  return (
-                    <tr key={e.id} className="hover:bg-muted/30 transition group">
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground shrink-0">
-                            {e.fullname.split(' ').map((n) => n[0]).join('').slice(0, 2)}
-                          </div>
-                          <span className="font-medium text-foreground">{e.fullname}</span>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
-                          e.position === 'Coordinator'
-                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                            : 'bg-muted text-muted-foreground'
-                        }`}>
-                          {e.position}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5 text-muted-foreground">{area?.name ?? '—'}</td>
-                      <td className="px-5 py-3.5 text-muted-foreground">{allocation?.regionName ?? '—'}</td>
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
-                          <button
-                            onClick={() => setEditingEmployee(e)}
-                            className="p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition"
-                            title="Edit employee"
-                          >
-                            <Pencil className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => setDeletingEmployee(e)}
-                            className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-muted-foreground hover:text-red-600 dark:hover:text-red-400 transition"
-                            title="Delete employee"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {grouped
+                  ? groups.map((g) => (
+                      <Fragment key={g.allocation.id}>
+                        <tr className="bg-muted/60">
+                          <td colSpan={5} className="px-5 py-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                                {g.allocation.regionName}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                &middot; {g.allocation.cotCoordinatorName} &middot; {g.employees.length} employee{g.employees.length === 1 ? '' : 's'}
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                        {g.employees.map((e) => renderEmployeeRow(e))}
+                      </Fragment>
+                    ))
+                  : filtered.map((e) => renderEmployeeRow(e))}
                 {filtered.length === 0 && (
                   <tr>
                     <td colSpan={5} className="px-5 py-10 text-center text-muted-foreground text-sm">

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { allocations, areas, fmtDate } from '@/lib/mock-data';
 import { company } from '@/config/company';
 import {
   Plus,
@@ -11,37 +12,6 @@ import {
   ChevronRight,
   Filter,
 } from 'lucide-react';
-
-// Placeholder data — replace with DB queries once schema is migrated
-const allocations = [
-  {
-    id: '1',
-    region: 'Region 2',
-    coordinator: 'T. Dlamini',
-    deliveryDate: '2026-03-01',
-    totalToilets: 120,
-    onboardingStatus: 'COMPLETE',
-    areas: 3,
-  },
-  {
-    id: '2',
-    region: 'Region 5 — Site 1',
-    coordinator: 'B. Nkosi',
-    deliveryDate: '2026-03-15',
-    totalToilets: 80,
-    onboardingStatus: 'COMPLETE',
-    areas: 2,
-  },
-  {
-    id: '3',
-    region: 'Region 5 — Leeuwfontein',
-    coordinator: 'B. Nkosi',
-    deliveryDate: '2026-04-01',
-    totalToilets: 60,
-    onboardingStatus: 'IN_PROGRESS',
-    areas: 2,
-  },
-];
 
 function StatusBadge({ status }: { status: string }) {
   if (status === 'COMPLETE') {
@@ -62,6 +32,7 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function AllocationsPage() {
   const router = useRouter();
+
   return (
     <main className="flex-1 p-8">
       <div className="max-w-6xl">
@@ -120,38 +91,33 @@ export default function AllocationsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {allocations.map((a) => (
-                <tr
-                  key={a.id}
-                  onClick={() => router.push(`/allocations/${a.id}`)}
-                  className="hover:bg-muted/30 transition group cursor-pointer"
-                >
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-muted-foreground shrink-0" />
-                      <span className="font-medium text-foreground">{a.region}</span>
-                    </div>
-                  </td>
-                  <td className="px-5 py-4 text-muted-foreground">{a.coordinator}</td>
-                  <td className="px-5 py-4 text-muted-foreground">
-                    {new Date(a.deliveryDate).toLocaleDateString('en-ZA', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                  </td>
-                  <td className="px-5 py-4 text-right font-medium text-foreground">
-                    {a.totalToilets}
-                  </td>
-                  <td className="px-5 py-4 text-right text-muted-foreground">{a.areas}</td>
-                  <td className="px-5 py-4">
-                    <StatusBadge status={a.onboardingStatus} />
-                  </td>
-                  <td className="px-5 py-4 text-right">
-                    <ChevronRight className="w-4 h-4 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition" />
-                  </td>
-                </tr>
-              ))}
+              {allocations.map((a) => {
+                const areaCount = areas.filter((ar) => ar.allocationId === a.id).length;
+                return (
+                  <tr
+                    key={a.id}
+                    onClick={() => router.push(`/allocations/${a.id}`)}
+                    className="hover:bg-muted/30 transition group cursor-pointer"
+                  >
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <span className="font-medium text-foreground">{a.regionName}</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 text-muted-foreground">{a.cotCoordinatorName}</td>
+                    <td className="px-5 py-4 text-muted-foreground">{fmtDate(a.deliveryDate)}</td>
+                    <td className="px-5 py-4 text-right font-medium text-foreground">{a.totalToilets}</td>
+                    <td className="px-5 py-4 text-right text-muted-foreground">{areaCount}</td>
+                    <td className="px-5 py-4">
+                      <StatusBadge status={a.onboardingStatus} />
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <ChevronRight className="w-4 h-4 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition" />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
 

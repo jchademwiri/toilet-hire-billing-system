@@ -3,6 +3,7 @@ import { Inter, Fira_Code } from "next/font/google";
 import { company } from "@/config/company";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 
 const inter = Inter({
@@ -42,16 +43,19 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${firaCode.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="h-full flex flex-col">
         {/* Sidebar + main content fill the viewport height */}
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 min-h-0 overflow-hidden">
           <Sidebar />
-          <div className="flex-1 flex flex-col overflow-y-auto">
+          <div id="main-content" className="flex-1 flex flex-col min-h-0 overflow-y-auto">
             {children}
           </div>
         </div>
         {/* Single footer spanning full width, below both sidebar and content */}
         <Footer />
+
+        {/* Scroll-to-top button */}
+        <ScrollToTop />
       </body>
     </html>
   );

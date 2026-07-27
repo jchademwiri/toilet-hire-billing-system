@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { company } from '@/config/company';
 
 export default function Footer() {
@@ -6,15 +7,15 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex items-center justify-between text-xs text-zinc-600 dark:text-zinc-400">
         <p>{company.contractReference} • {company.client} {company.description}</p>
         <div className="flex gap-6">
-          <a href="#" className="hover:text-zinc-900 dark:hover:text-white transition">
+          <Link href="/audit-log" className="hover:text-zinc-900 dark:hover:text-white transition">
             Audit Log
-          </a>
-          <a href="#" className="hover:text-zinc-900 dark:hover:text-white transition">
+          </Link>
+          <Link href="/settings" className="hover:text-zinc-900 dark:hover:text-white transition">
             Settings
-          </a>
-          <a href="#" className="hover:text-zinc-900 dark:hover:text-white transition">
+          </Link>
+          <Link href="/help" className="hover:text-zinc-900 dark:hover:text-white transition">
             Help
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

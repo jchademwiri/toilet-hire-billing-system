@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { company } from '@/config/company';
 
 export default function Header() {
@@ -16,32 +17,26 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <a
-              href="#"
-              className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition"
+          {/* Quick nav */}
+          <nav className="hidden md:flex items-center gap-6">
+            <Link
+              href="/"
+              className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition"
             >
               Dashboard
-            </a>
-            <a
-              href="#"
-              className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition"
+            </Link>
+            <Link
+              href="/allocations"
+              className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition"
             >
               Allocations
-            </a>
-            <a
-              href="#"
-              className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition"
+            </Link>
+            <Link
+              href="/billing"
+              className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition"
             >
               Billing
-            </a>
-            <a
-              href="#"
-              className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition"
-            >
-              Reports
-            </a>
+            </Link>
           </nav>
 
           {/* User Menu */}

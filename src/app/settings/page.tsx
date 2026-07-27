@@ -112,7 +112,7 @@ export default function SettingsPage() {
         <Section title="Billing periods" icon={CalendarDays}>
           <p className="text-xs text-muted-foreground mb-4">
             Standard cycle: 26th of previous month → 25th of current month.
-            June and July have overrides for the City of Tshwane financial year-end.
+            June and July have overrides for the {contract.client} financial year-end.
           </p>
           <div className="rounded-lg border border-border overflow-hidden">
             <table className="w-full text-sm">
@@ -145,7 +145,7 @@ export default function SettingsPage() {
             </table>
           </div>
           <p className="text-xs text-muted-foreground mt-3">
-            ⚑ Override periods (June 25–30 / July 1–25) accommodate the City of Tshwane 30 June financial year-end.
+            ⚑ Override periods (June 25–30 / July 1–25) accommodate the {contract.client} 30 June financial year-end.
             Confirm whether this recurs annually.
           </p>
         </Section>

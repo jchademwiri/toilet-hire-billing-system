@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { company } from '@/config/company';
+import { regions, cotCoordinators, employees } from '@/lib/mock-data';
 import {
   ArrowLeft,
   ArrowRight,
@@ -119,16 +120,18 @@ function Step1({ onNext }: { onNext: () => void }) {
           <label className="text-sm font-medium text-foreground">Region</label>
           <select className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
             <option value="">Select region…</option>
-            <option>Region 2</option>
-            <option>Region 5</option>
+            {regions.map((r) => (
+              <option key={r.id} value={r.id}>{r.name}</option>
+            ))}
           </select>
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-foreground">{company.coordinatorLabel}</label>
           <select className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
             <option value="">Select coordinator…</option>
-            <option>T. Dlamini</option>
-            <option>B. Nkosi</option>
+            {cotCoordinators.map((c) => (
+              <option key={c.id} value={c.id}>{c.fullname}</option>
+            ))}
           </select>
         </div>
         <div className="space-y-1.5">
@@ -360,8 +363,9 @@ function Step4({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
             <label className="text-sm font-medium text-foreground">Site coordinator</label>
             <select className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
               <option value="">Select coordinator…</option>
-              <option>M. Sithole</option>
-              <option>P. Mokoena</option>
+              {employees.filter((e) => e.position === 'Coordinator').map((e) => (
+                <option key={e.id} value={e.id}>{e.fullname}</option>
+              ))}
             </select>
             <p className="text-xs text-muted-foreground">
               A coordinator can only be assigned to one area at a time.

@@ -13,9 +13,9 @@ PMG Control Center. Stack: Next.js, TypeScript, Tailwind, shadcn, Drizzle ORM, P
 The system produces two representations of the same billing period from the same data:
 
 1. **Client-facing documents** — Invoice, Service Notes, Toilet Coordinates, Statement — itemized
-   **per Area**, matching the current Excel format (one line per township/settlement: Qty, Days in
-   Period, Rental Amount, No of Services, Service Amount, Sub Total). This is what City of Tshwane
-   receives.
+   **per Area**, matching the approved Excel format (see `docs/excel-sheets/` for reference files).
+   Layout: one line per township/settlement with columns Location | Qty | Days in Period | Rental
+   Amount | No of Services | Service Amount | Sub Total. This is what City of Tshwane receives.
 2. **Sage sync payload** — aggregated project-wide into **up to 4 line items**: Hire of standard
    toilets, Hire of disabled toilets, Servicing, Relocation. Only non-zero lines are included.
    Sage exists purely to obtain the sequential invoice number and keep the ledger in sync — it
@@ -23,6 +23,13 @@ The system produces two representations of the same billing period from the same
 
 Both outputs are generated from the same `PeriodLine` records: the client document itemizes them,
 the Sage payload sums them by rate-type.
+
+### Invoice numbering convention
+
+Until Phase 5 (Sage sync) is built, invoice numbers follow the STP convention:
+**`STP-INV-26-XXXX`** (e.g. `STP-INV-26-0396`, `STP-INV-26-0397`). Jacob enters these manually
+by generating the invoice in the app, transcribing the totals into Sage, then copying the
+Sage-assigned number back into the app. The field stays editable until filled in.
 
 ---
 
@@ -49,10 +56,10 @@ Contract → Region → Allocation → Area → Toilet
   across its allocations.
 - **ServiceSchedule** — 2 weekdays, set **once per Allocation** (region-wide within that
   allocation), not per Area — areas under the same allocation share the schedule in practice.
-- **Toilet** — belongs to an Area; carries type (standard/disabled), coordinates, install/removal
-  dates.
-- **Invoice** — one per Allocation per billing period. Invoice number always comes from Sage;
-  amount and line descriptions are owned by the app.
+- **Toilet** — belongs to an Area; carries type (standard/disabled), coordinates (DMS format),
+  install/removal dates.
+- **Invoice** — one per Allocation per billing period. Invoice number uses STP convention until
+  Sage sync exists; amount and line descriptions are owned by the app.
 - **PeriodLine** — one row per Area per billing period; feeds both the client document and the
   Sage aggregate.
 
@@ -117,8 +124,8 @@ export const toilets = pgTable('toilets', {
   areaId: uuid('area_id').references(() => areas.id),
   toiletNumber: varchar('toilet_number', { length: 30 }).notNull(),
   toiletType: varchar('toilet_type', { length: 20 }).notNull().default('STANDARD'),
-  latitude: varchar('latitude', { length: 25 }).notNull(),
-  longitude: varchar('longitude', { length: 25 }).notNull(),
+  latitude: varchar('latitude', { length: 25 }).notNull(),  // DMS format: 25°23'24.7"S
+  longitude: varchar('longitude', { length: 25 }).notNull(), // DMS format: 28°14'53.1"E
   installedOn: date('installed_on').notNull(),
   removedOn: date('removed_on'),
 });
@@ -152,7 +159,7 @@ export const invoices = pgTable('invoices', { // one per ALLOCATION per billing 
   id: uuid('id').defaultRandom().primaryKey(),
   allocationId: uuid('allocation_id').references(() => allocations.id),
   billingPeriodId: uuid('billing_period_id').references(() => billingPeriods.id),
-  invoiceNumber: varchar('invoice_number', { length: 50 }).unique(), // Sage-assigned
+  invoiceNumber: varchar('invoice_number', { length: 50 }).unique(), // STP-INV-26-XXXX until Sage sync
   invoiceDate: date('invoice_date').notNull(),
   subtotal: doublePrecision('subtotal').notNull(),
   vat: doublePrecision('vat').notNull(),
@@ -194,6 +201,10 @@ export const payments = pgTable('payments', {
 });
 ```
 
+> **Coordinate format note**: GPS coordinates in the source Excel files use **DMS (Degrees, Minutes,
+> Seconds)** format, e.g. `25°23'24.7"S 28°14'53.1"E`. The `latitude` and `longitude` fields are
+> `varchar(25)` to accommodate this format. See `docs/excel-sheets/` for reference files.
+
 ---
 
 ## 3. Business rules
@@ -220,7 +231,7 @@ export const payments = pgTable('payments', {
 Multi-step, resumable, skippable, independently saved:
 1. Allocation meta — region, CoT coordinator, total toilet count, delivery date
 2. Area split — divide total toilets across Areas (must sum to total)
-3. Toilet numbers + coordinates + type, per Area
+3. Toilet numbers + coordinates (DMS format) + type, per Area
 4. Site coordinator + employees, per Area
 5. Service schedule — 2 weekdays, once per allocation
 
@@ -237,8 +248,8 @@ that allocation. Steps can be completed out of order and resumed later.
 
 ## 4. Sage integration
 
-- **Invoice number**: always Sage-assigned; the app posts without a number and stores whatever
-  comes back.
+- **Invoice number**: uses `STP-INV-26-XXXX` format entered manually until Phase 5 is built. Once
+  sync exists, the app posts without a number and stores whatever Sage returns.
 - **Amount & descriptions**: app is source of truth. If Sage-side data drifts, the app's sync
   overwrites it.
 - **Confirmed**: Sage's API does allow amount edits on existing invoices (further detail pending).
@@ -258,10 +269,45 @@ that allocation. Steps can be completed out of order and resumed later.
   going forward rather than Excel — only re-entered when a toilet is added/removed or a new
   allocation happens.
 
+### 5.1 Document layouts
+
+Each document's layout is based on the Tshwane-approved Excel files in `docs/excel-sheets/`.
+
+#### Tax Invoice
+- Header: provider (Sithembe Transportation & Projects), customer (City of Tshwane), contract
+  reference (HS 02-2025/26), invoice number, invoice date, period start/end, rates table
+- Body: per-area rows with columns — `# | Location | Qty | Days | Rental Amt | Services |
+  Service Amt | Sub Total`
+- Footer: Totals row → Subtotal → VAT (15%) → Gross Total
+
+#### Service Notes
+- Header: Customer VAT (4000142267), Vendor VAT (4070272101), Tender Number (HS 02–2025/26),
+  Vendor Number (101776), toilets onsite count
+- Table: Region Number | Site Name | Comments
+- Footer: Signature block — Service Provider (name, surname, signature, date) and
+  Site Coordinator (name, surname, signature, date)
+
+#### GPS Coordinates
+One section per area. Each row: Number | Toilet Number | Co-ordinates (DMS format, e.g.
+`25°23'24.7"S 28°14'53.1"E`)
+
 ---
 
-## 6. Open items
+## 6. Company branding & theming
+
+The app supports per-deployment rebranding via configuration files:
+
+- **Company config**: `src/config/company.ts` contains brand identity (logo text, short name,
+  tagline), client/contract info, coordinator labels, and SEO metadata.
+- **Rebranding**: copy `src/config/company.example.ts` → `src/config/company.ts` and edit values.
+  The config is git-ignored so custom values stay local.
+- **Theme**: light/dark mode toggle persists to localStorage and respects OS system preference.
+
+---
+
+## 7. Open items
 1. Confirm disabled-unit rental rate and relocation rate.
 2. Confirm whether the June/July cycle shift recurs every year of the contract.
 3. Confirm full details of Sage's edit-after-post API behavior.
 4. Decide storage approach for EPWP ID numbers (separate restricted table recommended).
+5. Confirm actual delivery dates for each allocation (not just "start of contract").

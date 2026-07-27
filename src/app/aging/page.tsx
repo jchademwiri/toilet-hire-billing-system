@@ -5,7 +5,7 @@ type AgingBucket = 'current' | '30' | '60' | '90plus';
 
 function getAgingBucket(invoiceDate: string, status: string): AgingBucket {
   if (status !== 'OUTSTANDING') return 'current';
-  const today = new Date('2026-07-27'); // fixed for mock data
+  const today = new Date();
   const issued = new Date(invoiceDate);
   const days = Math.floor((today.getTime() - issued.getTime()) / 86400000);
   if (days <= 30) return 'current';

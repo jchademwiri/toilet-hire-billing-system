@@ -46,7 +46,7 @@ allocation can be invoiced.
 **Steps** (each independently saved):
 1. **Allocation meta** — region, CoT coordinator, total toilet count, delivery date.
 2. **Area split** — divide the total across named areas; validates that the sum equals the total.
-3. **Toilet enrollment** — per area, enter toilet numbers, GPS coordinates, and type
+3. **Toilet enrollment** — per area, enter toilet numbers, GPS coordinates (DMS format), and type
    (standard/disabled); validates every toilet has non-empty coordinates.
 4. **Coordinator & employee assignment** — one site coordinator per area (exclusive, never shared),
    plus cleaners; soft warning (not a block) if cleaner count deviates far from ~1:10.
@@ -102,10 +102,37 @@ in the interim, a manual invoice-number entry field instead).
 ## 6. Document bundle / previewer
 
 **Purpose**: review and print the actual client-facing submission documents for one invoice.
+Layout matches the Tshwane-approved Excel format exactly (see `docs/excel-sheets/` for reference).
 
-**Shows**: tabs (or a scrollable stack) for Tax Invoice, Service Notes, Cleaning Schedule, EPWP
-Employee List, GPS Coordinates — each rendered from the same underlying period data, matching the
-current Excel layout.
+**Shows**: tabs (or a scrollable stack) for each document, rendered from the same underlying period
+data:
+
+### Tax Invoice
+Approved column layout (one row per area):
+
+| # | Location | Qty | Days | Rental Amt | Services | Service Amt | Sub Total |
+|---|---|---|---|---|---|---|---|
+| 1 | Themba View Ext 1 | 8 | 25 | R2,300.00 | 7 | R5,404.00 | R7,704.00 |
+
+Footer: **Subtotal → VAT (15%) → Gross Total**. Header shows invoice number (`STP-INV-26-XXXX`),
+invoice date, period, provider (Sithembe Transportation & Projects), customer (City of Tshwane),
+contract reference (HS 02-2025/26), and rates (Rental R11.50, Service R96.50).
+
+### Service Notes
+Header: Customer/Vendor VAT numbers, Tender Number (HS 02–2025/26), Vendor Number (101776).
+Table columns: Region Number | Site Name | Comments.
+Footer: Signature block with Service Provider (name, surname, signature, date) and
+Site Coordinator (name, surname, signature, date).
+
+### Cleaning Schedule
+_(layout TBD — derived from service schedule + employee assignments)_
+
+### EPWP Employee List
+Per-area list of employees (name, position). ID numbers are **not** shown here (see POPIA note).
+
+### GPS Coordinates
+One section per area, listing: Number | Toilet Number | Co-ordinates (DMS format, e.g.
+`25°23'24.7"S 28°14'53.1"E`).
 
 **Actions**: print/save each document individually, or download the full bundle as one action.
 
@@ -118,8 +145,8 @@ current Excel layout.
 **Purpose**: the full invoice register across every allocation — separate from the Billing hub
 because this is about looking back at what's been issued, not generating something new.
 
-**Shows**: table of invoices — allocation, region, period, invoice number (manually entered until
-Sage sync exists), amount, date issued, payment status.
+**Shows**: table of invoices — allocation, region, period, invoice number (`STP-INV-26-XXXX`
+format, manually entered until Sage sync exists), amount, date issued, payment status.
 
 **Actions**: open an invoice → its document bundle; manually enter/edit the invoice number field
 (Phase 1–4 interim workflow); once Sage sync exists, a sync-status indicator and manual re-sync
@@ -131,12 +158,18 @@ action.
 
 ## 8. Statement & aging
 
-**Purpose**: the accounts-receivable view — what's outstanding, and how overdue.
+**Purpose**: the accounts-receivable view — what's outstanding, and how overdue. Evolved from the
+basic aging report into the full **Project Statement** format matching `HS 02 Project Statement
+Region.xlsx`.
 
-**Shows**: per-allocation and aggregate view, invoices bucketed into current / 30 / 60 / 90+ days
-based on invoice date and payment status.
+**Shows**:
+- **Transactions table** — Date | Invoice # | Description ("Toilet Hire and Servicing") |
+  Sub Total | VAT | Total | Debit | Credit | Status
+- **Aging summary** at the bottom — 90+ Days / 60 Days / 30 Days / Current / Amount Due
+- Per-allocation and aggregate view, invoices bucketed by age based on invoice date and payment
+  status.
 
-**Actions**: filter by region/allocation/date range; drill into an invoice.
+**Actions**: filter by region/allocation/date range; drill into an invoice; record payment.
 
 **Reads**: `invoices`, `payments`.
 
@@ -183,6 +216,8 @@ separate, access-restricted view given the POPIA sensitivity of that field.
 
 **Shows**: rental rate, disabled rental rate, service rate, relocation rate, VAT percentage,
 banking details, billing period override rules (the June 25–30 / July 1–25 cycle shift).
+Company branding (logo text, brand name, client name, contract reference) is configured in
+`src/config/company.ts`.
 
 **Reads/writes**: `contracts`, `billingPeriods` (override config).
 
@@ -191,27 +226,71 @@ banking details, billing period override rules (the June 25–30 / July 1–25 c
 ## 13. Sage sync log — deferred to Phase 5
 
 **Purpose**: once Sage integration exists, the audit trail for every push — previous amount, new
-amount, payload sent, response received, status. Not part of the initial build; listed here so the
-screen inventory stays complete for when Phase 5 starts.
+amount, payload sent, response received, status. A working stub page already exists displaying
+mock sync log data.
 
 **Reads**: `sageSyncLog`, joined to `invoices`.
 
 ---
 
+## 14. Audit Log
+
+**Purpose**: a chronological record of all system activity — not just Sage syncs, but allocation
+creation, invoice generation, and payment recording.
+
+**Shows**: activity timeline with icons per action type (invoice generated, payment recorded,
+Sage sync, allocation created), status indicators (success/failed/info), and timestamps. Summary
+cards showing total events, successful, and failed counts.
+
+**Actions**: scroll through the timeline; filter by event type (future enhancement).
+
+**Reads**: `sageSyncLog`, `invoices`, `payments`, `allocations`.
+
+---
+
+## 15. Help
+
+**Purpose**: user documentation and FAQ for operating the system.
+
+**Shows**: quick-link cards to related pages (Allocations, Billing Hub, Settings, Sage Sync);
+expandable FAQ accordion covering allocation setup, invoice calculation, payment recording, Sage
+sync, aging reports, and settings configuration.
+
+**Actions**: expand/collapse FAQ items; navigate to linked pages.
+
+**Reads**: none (static content).
+
+---
+
+## 16. Reports
+
+**Purpose**: detailed reporting and analytics. Currently a stub page — content deferred.
+
+**Shows**: placeholder page with "Coming soon" notice.
+
+**Actions**: none yet.
+
+**Reads**: none yet.
+
+---
+
 ## Summary table
 
-| # | Screen | Phase |
-|---|---|---|
-| 1 | Dashboard | 1 |
-| 2 | Allocations list | 1 |
-| 3 | New allocation wizard | 2 |
-| 4 | Allocation detail | 2 |
-| 5 | Billing hub | 3 |
-| 6 | Document bundle / previewer | 3 |
-| 7 | Invoice list / detail | 3 |
-| 8 | Statement & aging | 4 |
-| 9 | Record payment | 4 |
-| 10 | Regions & coordinators | 1–2 (reference data) |
-| 11 | Employees | 2 (reference data) |
-| 12 | Settings | 1 (reference data) |
-| 13 | Sage sync log | 5 (deferred) |
+| # | Screen | Phase | Status |
+|---|---|---|---|
+| 1 | Dashboard | 1 | ✅ Built |
+| 2 | Allocations list | 1 | ✅ Built |
+| 3 | New allocation wizard | 2 | ✅ Built |
+| 4 | Allocation detail | 2 | ✅ Built |
+| 5 | Billing hub | 3 | ✅ Built |
+| 6 | Document bundle / previewer | 3 | ❌ Not built |
+| 7 | Invoice list / detail | 3 | ✅ Built |
+| 8 | Statement & aging | 4 | ✅ Built (needs Project Statement update) |
+| 9 | Record payment | 4 | ✅ Built |
+| 10 | Regions & coordinators | 1–2 | ✅ Built |
+| 11 | Employees | 2 | ✅ Built |
+| 12 | Settings | 1 | ✅ Built |
+| 13 | Sage sync log | 5 (deferred) | ✅ Built (stub) |
+| 14 | Audit Log | 1 | ✅ Built |
+| 15 | Help | 1 | ✅ Built |
+| 16 | Reports | 1 | ✅ Built (stub) |

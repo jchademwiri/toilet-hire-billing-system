@@ -58,7 +58,7 @@ function generateToiletNumbers(area: typeof areas[number]) {
 
 // ── A4 GPS Coordinates Document ──────────────────────────────────────────────
 
-function CoordinatesDocument({ allocationId }: { allocationId: string }) {
+export function CoordinatesDocument({ allocationId }: { allocationId: string }) {
   const allocation = allocations.find((a) => a.id === allocationId);
   if (!allocation) return null;
 
@@ -153,32 +153,27 @@ function CoordinatesDocument({ allocationId }: { allocationId: string }) {
               TOTAL &nbsp;&nbsp;&nbsp;&nbsp; {area.toiletCount}
             </p>
 
-            {/* ── Signature block ── */}
-            <div className="mt-12 pt-2">
-              <p className="text-xs font-semibold text-zinc-800 mb-8">Signatures:</p>
-              <div className="grid grid-cols-2 gap-8">
-                <div>
-                  <p className="text-xs font-bold text-zinc-800 mb-6">{company.name}</p>
-                  <div className="text-xs text-zinc-600">
-                    <p className="mb-6">{fmtDate(docDate)}</p>
-                    <Image
-                      src={company.signaturePath}
-                      alt="Signature"
-                      width={120}
-                      height={40}
-                      className="object-contain mb-1"
-                      priority
-                    />
-                  </div>
-                  <div className="mt-6">
-                    <p className="text-xs font-semibold text-zinc-800 mb-3">City of Tshwane Official</p>
-                    <div className="text-xs text-zinc-600">
-                      <p className="mb-6">____________________</p>
-                      <p>Date</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* ── Signature block (single stacked column, matches source) ── */}
+            <div className="mt-12 pt-2 max-w-xs">
+              <p className="text-xs font-semibold text-zinc-800 mb-4">Signatures:</p>
+              <Image
+                src={company.signaturePath}
+                alt="Signature"
+                width={120}
+                height={40}
+                className="object-contain"
+                priority
+              />
+              <p className="border-t border-zinc-400 pt-0.5 mt-1 text-xs italic text-zinc-600">
+                {company.name}
+              </p>
+              <p className="mt-4 text-xs">{fmtDate(docDate)}</p>
+              <p className="border-t border-zinc-400 pt-0.5 mt-1 text-xs italic text-zinc-600">Date</p>
+
+              <p className="border-t border-zinc-400 pt-0.5 mt-8 text-xs italic text-zinc-600">
+                City of Tshwane Official
+              </p>
+              <p className="border-t border-zinc-400 pt-0.5 mt-8 text-xs italic text-zinc-600">Date</p>
             </div>
           </div>
         );

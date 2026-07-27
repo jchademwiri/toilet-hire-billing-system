@@ -80,8 +80,12 @@ full rollout order.
 
 | Status | Screens |
 |---|---|
-| ✅ Built | Dashboard, Allocations, New Allocation Wizard, Allocation Detail, Billing Hub, Invoices, Payments, Statement & Aging, Regions, Coordinators, Employees, Settings, Sage Sync Log, Audit Log, Help, Reports |
-| ❌ Not built | Document Bundle / Previewer |
+| ✅ Built | Dashboard, Allocations, New Allocation Wizard, Allocation Detail, Billing Hub, Invoices, Payments, Statement & Aging, Regions, Coordinators, Employees, Settings, Sage Sync Log, Audit Log, Help, Reports, Document Bundle / Previewer |
+
+All 16 screens are now built. The Document Bundle screen (`/bundle/[invoiceId]`) composes the Tax
+Invoice, Service Notes, Weekly Cleaning Schedule, EPWP Employee List, and GPS Coordinates documents
+into one printable set — each is also available at its own route (`/invoices`, `/service-notes`,
+`/cleaning-schedule`, `/epwp`, `/coordinates`) via the document sidebar.
 
 ## Running calculation-engine tests
 

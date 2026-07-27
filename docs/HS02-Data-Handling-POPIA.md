@@ -37,14 +37,22 @@ the Protection of Personal Information Act (POPIA), not just an operational data
   restricted table.
 - The Employees screen (per the Screens doc) shows name/position/area by default; ID number is a
   separate, explicitly-opened view — not a column in the default table.
-- No document the system generates (invoice, service notes, cleaning schedule) needs to print an
-  ID number — none of the source workbooks show it being used that way, so there's no reason to
-  surface it in generated PDFs.
+- **Exception — the EPWP Employee List document**: this is the one generated PDF that does print
+  the ID number, because the actual Tshwane-approved workbook (`04 Toilet Services/Service
+  notes.xlsx` and every region's July EPWP sheet) includes it as a submitted-to-CoT compliance
+  requirement. Decision made 2026-07-27: match the source format exactly rather than diverge from
+  what's actually been submitted historically. Implementation:
+  `src/app/epwp/[id]/page.tsx` reads the ID number only from the restricted `employeeIdNumbers`
+  lookup (see `src/lib/mock-data.ts`), never from the general `employees` table — so every other
+  screen and document (invoice, service notes, cleaning schedule, the Employees screen itself)
+  still never touches it. No other document should be extended to print it without a matching
+  decision recorded here.
 
 ## Open question worth resolving before building the employee module
 Does STP actually need to store ID numbers in this system at all, or is that only needed for
 payroll/EPWP compliance systems that already exist elsewhere? If the latter, the simplest and
 safest answer is: **don't store it here** — reference an external system by employee number
 instead of duplicating the ID number into a new database. Worth confirming before building the
-restricted table, since not building it at all is the lowest-risk option if it isn't actually
-needed.
+restricted table for real (the mock `employeeIdNumbers` export uses fabricated placeholder
+numbers, not real IDs) — not storing it at all remains the lowest-risk option if it isn't actually
+needed for anything other than printing this one document.

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { company } from '@/config/company';
 import {
   Plus,
   MapPin,
@@ -101,7 +102,7 @@ export default function AllocationsPage() {
                   Region / Allocation
                 </th>
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  CoT Coordinator
+                  {company.coordinatorLabel}
                 </th>
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Delivery date

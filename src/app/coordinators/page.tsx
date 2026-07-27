@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { company } from '@/config/company';
 import { cotCoordinators, regions, allocations } from '@/lib/mock-data';
 import { Users, Plus, Pencil, Search } from 'lucide-react';
 
@@ -19,9 +20,9 @@ export default function CoordinatorsPage() {
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-1">CoT Coordinators</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-1">{company.coordinatorsTitle}</h1>
             <p className="text-muted-foreground text-sm">
-              City of Tshwane municipal contacts assigned to allocations.
+              {company.coordinatorsDescription}
             </p>
           </div>
           <button className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/80 transition">

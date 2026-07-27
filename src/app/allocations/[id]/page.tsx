@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { company } from '@/config/company';
 import {
   allocations, areas, employees, serviceSchedules, invoices, fmt, fmtDate,
 } from '@/lib/mock-data';
@@ -50,7 +51,7 @@ export default async function AllocationDetailPage({ params }: { params: Promise
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-1">{allocation.regionName}</h1>
               <p className="text-muted-foreground text-sm">
-                CoT Coordinator: {allocation.cotCoordinatorName} · Delivered {fmtDate(allocation.deliveryDate)}
+                {company.coordinatorLabel}: {allocation.cotCoordinatorName} · Delivered {fmtDate(allocation.deliveryDate)}
               </p>
             </div>
             <div className="flex items-center gap-3">

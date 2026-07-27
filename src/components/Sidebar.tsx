@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { company } from '@/config/company';
 import {
   LayoutDashboard,
   Package,
@@ -147,18 +148,18 @@ export default function Sidebar() {
         {!isCollapsed && (
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-zinc-900 dark:bg-white rounded flex items-center justify-center shrink-0">
-              <span className="text-white dark:text-zinc-900 font-bold text-sm">HS</span>
+              <span className="text-white dark:text-zinc-900 font-bold text-sm">{company.logoText}</span>
             </div>
             <div>
-              <h2 className="font-bold text-zinc-900 dark:text-white text-sm">HS02</h2>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400">Billing</p>
+              <h2 className="font-bold text-zinc-900 dark:text-white text-sm">{company.shortName}</h2>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">{company.tagline}</p>
             </div>
           </div>
         )}
         {isCollapsed && (
           <div className="w-full flex items-center justify-center">
             <div className="w-8 h-8 bg-zinc-900 dark:bg-white rounded flex items-center justify-center shrink-0">
-              <span className="text-white dark:text-zinc-900 font-bold text-sm">HS</span>
+              <span className="text-white dark:text-zinc-900 font-bold text-sm">{company.logoText}</span>
             </div>
           </div>
         )}

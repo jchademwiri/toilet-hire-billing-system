@@ -1,3 +1,5 @@
+import { company } from '@/config/company';
+
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800">
@@ -6,11 +8,11 @@ export default function Header() {
           {/* Logo / Brand */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-zinc-900 dark:bg-white rounded flex items-center justify-center">
-              <span className="text-white dark:text-zinc-900 font-bold text-sm">HS</span>
+              <span className="text-white dark:text-zinc-900 font-bold text-sm">{company.logoText}</span>
             </div>
             <div className="flex flex-col">
-              <h1 className="text-lg font-bold text-zinc-900 dark:text-white">HS02</h1>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400">Billing System</p>
+              <h1 className="text-lg font-bold text-zinc-900 dark:text-white">{company.shortName}</h1>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">{company.tagline}</p>
             </div>
           </div>
 

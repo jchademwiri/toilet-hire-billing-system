@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { company } from '@/config/company';
 import {
   allocations,
   invoices,
@@ -97,7 +98,7 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-1">Dashboard</h1>
           <p className="text-muted-foreground text-sm">
-            HS 02-2025/26 · City of Tshwane Chemical Toilet Hire
+            {company.contractReference} · {company.client} {company.description}
           </p>
         </div>
 

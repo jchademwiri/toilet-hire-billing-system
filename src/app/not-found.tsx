@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { company } from '@/config/company';
 import { ArrowLeft, LayoutDashboard, MapPin, FileText, Users, Settings } from 'lucide-react';
 
 const quickLinks = [
@@ -74,7 +75,7 @@ export default function NotFound() {
 
         {/* Sub-note */}
         <p className="text-center text-xs text-muted-foreground mt-4">
-          HS 02-2025/26 · City of Tshwane Chemical Toilet Hire
+          {company.contractReference} · {company.client} {company.description}
         </p>
       </div>
     </main>

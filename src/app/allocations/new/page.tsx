@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { company } from '@/config/company';
 import {
   ArrowLeft,
   ArrowRight,
@@ -123,7 +124,7 @@ function Step1({ onNext }: { onNext: () => void }) {
           </select>
         </div>
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-foreground">CoT Coordinator</label>
+          <label className="text-sm font-medium text-foreground">{company.coordinatorLabel}</label>
           <select className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
             <option value="">Select coordinator…</option>
             <option>T. Dlamini</option>

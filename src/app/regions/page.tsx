@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { company } from '@/config/company';
 import { regions, cotCoordinators, allocations } from '@/lib/mock-data';
 import { MapPin, Plus, Pencil, X, Check } from 'lucide-react';
 
@@ -20,7 +21,7 @@ export default function RegionsPage() {
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-1">Regions & Coordinators</h1>
             <p className="text-muted-foreground text-sm">
-              Reference data for regions and City of Tshwane coordinators.
+              Reference data for regions and {company.client} coordinators.
             </p>
           </div>
           <button className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/80 transition">

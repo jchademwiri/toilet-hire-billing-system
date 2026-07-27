@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Fira_Code } from "next/font/google";
+import { company } from "@/config/company";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import "./globals.css";
@@ -15,23 +16,14 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "HS02 Billing System | Chemical Toilet Hire Management",
-  description:
-    "Streamlined billing and operations system for chemical toilet hire services under contract HS 02-2025/26 with the City of Tshwane. Automated invoice generation, service tracking, and Sage integration.",
-  keywords: [
-    "toilet hire",
-    "billing system",
-    "chemical toilets",
-    "City of Tshwane",
-    "invoice management",
-    "service tracking",
-  ],
-  creator: "Sithembe Transportation and Projects",
-  publisher: "Sithembe Transportation and Projects",
+  title: company.metadata.title,
+  description: company.metadata.description,
+  keywords: [...company.metadata.keywords],
+  creator: company.name,
+  publisher: company.name,
   openGraph: {
-    title: "HS02 Billing System | Chemical Toilet Hire Management",
-    description:
-      "Streamlined billing and operations system for chemical toilet hire services.",
+    title: company.metadata.title,
+    description: company.metadata.description,
     type: "website",
   },
   robots: {

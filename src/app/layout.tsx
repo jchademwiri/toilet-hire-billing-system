@@ -50,12 +50,16 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${firaCode.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col md:flex-row">
-        <Sidebar />
-        <div className="flex-1 flex flex-col md:ml-0">
-          {children}
-          <Footer />
+      <body className="min-h-full flex flex-col">
+        {/* Sidebar + main content fill the viewport height */}
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar />
+          <div className="flex-1 flex flex-col overflow-y-auto">
+            {children}
+          </div>
         </div>
+        {/* Single footer spanning full width, below both sidebar and content */}
+        <Footer />
       </body>
     </html>
   );

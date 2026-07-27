@@ -84,7 +84,7 @@ function NavItem({ item, isCollapsed, isActive }: NavItemProps) {
             : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
         }`}
       >
-        <Icon className="w-5 h-5 flex-shrink-0" />
+        <Icon className="w-5 h-5 shrink-0" />
         {!isCollapsed && <span className="text-sm font-medium">{item.label}</span>}
         {isCollapsed && (
           <div className="absolute left-full ml-2 hidden group-hover:block bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-2 py-1 rounded text-xs whitespace-nowrap z-50">
@@ -104,7 +104,7 @@ function NavItem({ item, isCollapsed, isActive }: NavItemProps) {
         } text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800`}
       >
         <div className={`flex items-center ${isCollapsed ? '' : 'gap-3'}`}>
-          <item.icon className="w-5 h-5 flex-shrink-0" />
+          <item.icon className="w-5 h-5 shrink-0" />
           {!isCollapsed && <span className="text-sm font-medium">{item.label}</span>}
         </div>
         {!isCollapsed && (
@@ -138,7 +138,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`fixed md:static top-0 left-0 h-screen flex flex-col bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 transition-all duration-300 ease-in-out ${
+      className={`flex flex-col bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 transition-all duration-300 ease-in-out shrink-0 ${
         isCollapsed ? 'w-20' : 'w-64'
       }`}
     >
@@ -146,7 +146,7 @@ export default function Sidebar() {
       <div className="px-4 py-6 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
         {!isCollapsed && (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-zinc-900 dark:bg-white rounded flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 bg-zinc-900 dark:bg-white rounded flex items-center justify-center shrink-0">
               <span className="text-white dark:text-zinc-900 font-bold text-sm">HS</span>
             </div>
             <div>
@@ -157,14 +157,14 @@ export default function Sidebar() {
         )}
         {isCollapsed && (
           <div className="w-full flex items-center justify-center">
-            <div className="w-8 h-8 bg-zinc-900 dark:bg-white rounded flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 bg-zinc-900 dark:bg-white rounded flex items-center justify-center shrink-0">
               <span className="text-white dark:text-zinc-900 font-bold text-sm">HS</span>
             </div>
           </div>
         )}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded transition flex-shrink-0"
+          className="p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded transition shrink-0"
           title={isCollapsed ? 'Expand' : 'Collapse'}
         >
           <ChevronsLeft className={`w-5 h-5 transition ${isCollapsed ? 'rotate-180' : ''}`} />
@@ -178,18 +178,6 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Footer */}
-      <div className={`px-4 py-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'}`}>
-        <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium">
-          {isCollapsed ? 'HS' : 'HS 02-2025/26'}
-        </p>
-        {!isCollapsed && (
-          <>
-            <br />
-            <p className="text-xs text-zinc-500 dark:text-zinc-500">City of Tshwane</p>
-          </>
-        )}
-      </div>
     </aside>
   );
 }

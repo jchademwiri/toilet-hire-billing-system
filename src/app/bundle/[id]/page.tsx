@@ -6,17 +6,21 @@ import {
 import PrintButton from '@/components/PrintButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
 import { ArrowLeft } from 'lucide-react';
-import { InvoiceDocument, computeAreaLines } from '@/app/invoices/[id]/page';
-import { ServiceNotesDocument } from '@/app/service-notes/[id]/page';
-import { CleaningScheduleDocument } from '@/app/cleaning-schedule/[id]/page';
-import { EpwpEmployeeListDocument } from '@/app/epwp/[id]/page';
-import { CoordinatesDocument } from '@/app/coordinates/[id]/page';
+import { computeAreaLines } from '@/lib/invoice-lines';
+import { InvoiceDocument } from '@/components/documents/InvoiceDocument';
+import { ServiceNotesDocument } from '@/components/documents/ServiceNotesDocument';
+import { CleaningScheduleDocument } from '@/components/documents/CleaningScheduleDocument';
+import { EpwpEmployeeListDocument } from '@/components/documents/EpwpEmployeeListDocument';
+import { CoordinatesDocument } from '@/components/documents/CoordinatesDocument';
 
 // ── Document Bundle / Previewer ──────────────────────────────────────────────
 // Renders the full client-facing submission set for one invoice period in one
 // place — Tax Invoice, Service Notes, Weekly Cleaning Schedule, EPWP Employee
 // List, GPS Coordinates — so it can be reviewed and printed as a single PDF,
 // matching how the real Excel workbook exports as one multi-page document.
+//
+// TODO(auth): this route embeds EpwpEmployeeListDocument, so the same missing
+// session/role check noted in src/app/epwp/[id]/page.tsx applies here too.
 
 export default async function DocumentBundlePage({
   params,
@@ -41,7 +45,7 @@ export default async function DocumentBundlePage({
   return (
     <main className="flex-1 p-4 md:p-8">
       {/* ── Toolbar ── */}
-      <div className="max-w-[297mm] mx-auto mb-4 flex items-center justify-between">
+      <div className="max-w-[297mm] mx-auto mb-4 flex items-center justify-between print:hidden">
         <Link
           href={`/invoices/${id}`}
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition"

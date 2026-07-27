@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Fira_Code } from "next/font/google";
+import Script from "next/script";
 import { company } from "@/config/company";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
@@ -42,8 +43,16 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${firaCode.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="h-full flex flex-col">
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=localStorage.getItem('theme');if(!t)t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.classList.toggle('dark',t==='dark')})()`,
+          }}
+        />
         {/* Sidebar + main content fill the viewport height */}
         <div className="flex flex-1 min-h-0 overflow-hidden">
           <Sidebar />

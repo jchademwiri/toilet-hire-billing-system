@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { company } from '@/config/company';
+import ThemeSwitcher from '@/components/ThemeSwitcher';
 
 export default function Header() {
   return (
@@ -40,7 +41,8 @@ export default function Header() {
           </nav>
 
           {/* User Menu */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <ThemeSwitcher />
             <div className="w-8 h-8 bg-zinc-300 dark:bg-zinc-700 rounded-full"></div>
           </div>
         </div>

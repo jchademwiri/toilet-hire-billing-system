@@ -53,10 +53,12 @@ Tshwane-approved layouts and should be treated as the source of truth for format
 
 ### `Service notes.xlsx`
 **Location**: `docs/excel-sheets/04 Toilet Services/`
-- **Feeds**: confirms the Service Notes layout requirements — customer/vendor VAT numbers, tender
-  number, vendor number, region/site/comment table format, signature block.
-- **Action**: use as the template for the Document Bundle's Service Notes document. No data rows
-  to migrate — this is a format reference.
+- **Feeds**: confirms the Service Notes layout requirements — one row per area, one column per
+  actual service date in the period, plus a "No of Service" count. Also the source for the Weekly
+  Cleaning Schedule and EPWP Employee List document formats (built at
+  `src/app/cleaning-schedule/[id]/page.tsx` and `src/app/epwp/[id]/page.tsx`).
+- **Action**: used as the template for the Document Bundle's Service Notes, Cleaning Schedule, and
+  EPWP Employee List documents. No data rows to migrate — this is a format reference.
 
 ### `Timesheets.xlsx`
 **Location**: `docs/excel-sheets/04 Toilet Services/`

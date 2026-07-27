@@ -4,11 +4,17 @@ import { allocations, invoices } from '@/lib/mock-data';
 import PrintButton from '@/components/PrintButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
 import { ArrowLeft } from 'lucide-react';
-import { CoordinatesDocument } from '@/components/documents/CoordinatesDocument';
+import { EpwpEmployeeListDocument } from '@/components/documents/EpwpEmployeeListDocument';
 
 // ── Page ─────────────────────────────────────────────────────────────────────
+//
+// TODO(auth): this route (and /bundle/[id], which embeds the same document)
+// renders EPWP ID numbers with no session/role check — see
+// docs/HS02-Data-Handling-POPIA.md. The app has no auth/session layer at all
+// yet (true of every route, not just this one), so a real fix means adding
+// that layer first, not a one-off guard here. Tracked as a follow-up.
 
-export default async function CoordinatesDetailPage({
+export default async function EpwpEmployeeListPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -31,7 +37,7 @@ export default async function CoordinatesDetailPage({
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition"
         >
           <ArrowLeft className="w-4 h-4" />
-          Allocations
+          Service Notes
         </Link>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted-foreground">{allocation.regionName}</span>
@@ -43,7 +49,7 @@ export default async function CoordinatesDetailPage({
       <div className="flex gap-6 items-start justify-center">
         {/* Left: A4 Document Preview */}
         <div className="shrink-0">
-          <CoordinatesDocument allocationId={id} />
+          <EpwpEmployeeListDocument allocationId={id} />
         </div>
 
         {/* Right: Document sidebar */}
@@ -60,9 +66,8 @@ export default async function CoordinatesDetailPage({
         @media print {
           @page { margin: 0; size: A4; }
           html, body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          nav, header, footer, aside, .print\:hidden { display: none !important; }
-          #coordinates-document { display: block; }
-          #coordinates-document > div {
+          nav, header, footer, aside, .print\\:hidden { display: none !important; }
+          #epwp-document {
             visibility: visible;
             box-shadow: none !important;
             position: relative;

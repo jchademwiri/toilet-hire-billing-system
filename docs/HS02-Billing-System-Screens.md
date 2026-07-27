@@ -124,17 +124,24 @@ Table columns: Region Number | Site Name | Comments.
 Footer: Signature block with Service Provider (name, surname, signature, date) and
 Site Coordinator (name, surname, signature, date).
 
-### Cleaning Schedule
-_(layout TBD — derived from service schedule + employee assignments)_
+### Weekly Cleaning Schedule
+Table: Informal Settlement Area | No of Toilets | Weekly Cleaning Dates (e.g. "Monday & Thursday").
+Footer: Service Provider Official / City of Tshwane Official signature blocks. Built at
+`src/app/cleaning-schedule/[id]/page.tsx`.
 
 ### EPWP Employee List
-Per-area list of employees (name, position). ID numbers are **not** shown here (see POPIA note).
+Table: Fullname | ID Number | Location | Position. Built at `src/app/epwp/[id]/page.tsx` — this is
+the one document that prints the employee ID number, sourced only from the restricted
+`employeeIdNumbers` lookup (see `docs/HS02-Data-Handling-POPIA.md` for why every other screen and
+document keeps it out).
 
 ### GPS Coordinates
 One section per area, listing: Number | Toilet Number | Co-ordinates (DMS format, e.g.
 `25°23'24.7"S 28°14'53.1"E`).
 
-**Actions**: print/save each document individually, or download the full bundle as one action.
+**Actions**: print/save each document individually at its own route, or open `/bundle/[invoiceId]`
+to print the full 5-document set as one action (built at `src/app/bundle/[id]/page.tsx`, reusing
+each document's component).
 
 **Reads**: `periodLines`, `toilets`, `employees`, `invoices` for the selected billing period.
 
@@ -283,7 +290,7 @@ sync, aging reports, and settings configuration.
 | 3 | New allocation wizard | 2 | ✅ Built |
 | 4 | Allocation detail | 2 | ✅ Built |
 | 5 | Billing hub | 3 | ✅ Built |
-| 6 | Document bundle / previewer | 3 | ❌ Not built |
+| 6 | Document bundle / previewer | 3 | ✅ Built |
 | 7 | Invoice list / detail | 3 | ✅ Built |
 | 8 | Statement & aging | 4 | ✅ Built (needs Project Statement update) |
 | 9 | Record payment | 4 | ✅ Built |

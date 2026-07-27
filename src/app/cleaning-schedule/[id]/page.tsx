@@ -4,11 +4,11 @@ import { allocations, invoices } from '@/lib/mock-data';
 import PrintButton from '@/components/PrintButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
 import { ArrowLeft } from 'lucide-react';
-import { CoordinatesDocument } from '@/components/documents/CoordinatesDocument';
+import { CleaningScheduleDocument } from '@/components/documents/CleaningScheduleDocument';
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
-export default async function CoordinatesDetailPage({
+export default async function CleaningScheduleDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -31,7 +31,7 @@ export default async function CoordinatesDetailPage({
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition"
         >
           <ArrowLeft className="w-4 h-4" />
-          Allocations
+          Service Notes
         </Link>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted-foreground">{allocation.regionName}</span>
@@ -43,7 +43,7 @@ export default async function CoordinatesDetailPage({
       <div className="flex gap-6 items-start justify-center">
         {/* Left: A4 Document Preview */}
         <div className="shrink-0">
-          <CoordinatesDocument allocationId={id} />
+          <CleaningScheduleDocument allocationId={id} />
         </div>
 
         {/* Right: Document sidebar */}
@@ -60,9 +60,8 @@ export default async function CoordinatesDetailPage({
         @media print {
           @page { margin: 0; size: A4; }
           html, body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          nav, header, footer, aside, .print\:hidden { display: none !important; }
-          #coordinates-document { display: block; }
-          #coordinates-document > div {
+          nav, header, footer, aside, .print\\:hidden { display: none !important; }
+          #cleaning-schedule-document {
             visibility: visible;
             box-shadow: none !important;
             position: relative;

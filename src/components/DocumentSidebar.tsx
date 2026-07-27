@@ -5,11 +5,14 @@ import { usePathname } from 'next/navigation';
 import {
   FileText,
   ClipboardCheck,
+  ClipboardList,
+  Users,
   MapPin,
   CalendarDays,
   TrendingUp,
   ChevronRight,
   ExternalLink,
+  Layers,
 } from 'lucide-react';
 
 interface DocLinkProps {
@@ -69,6 +72,9 @@ export default function DocumentSidebar({
     ? `/invoices/${activeInvoiceId}`
     : (allocationInvoiceIds?.[0] ? `/invoices/${allocationInvoiceIds[0]}` : null);
 
+  // Bundle is keyed off an invoice period too — prefer the active one, else the first available
+  const bundleInvoiceId = activeInvoiceId ?? allocationInvoiceIds?.[0];
+
   return (
     <aside className="space-y-4 print:hidden">
       {/* Document navigation */}
@@ -96,6 +102,20 @@ export default function DocumentSidebar({
             isActive={pathname === `/service-notes/${allocationId}`}
           />
           <DocLink
+            label="Cleaning Schedule"
+            href={`/cleaning-schedule/${allocationId}`}
+            icon={<ClipboardList className="w-4 h-4" />}
+            description="Weekly cleaning dates per area"
+            isActive={pathname === `/cleaning-schedule/${allocationId}`}
+          />
+          <DocLink
+            label="EPWP Employee List"
+            href={`/epwp/${allocationId}`}
+            icon={<Users className="w-4 h-4" />}
+            description="Fullname, ID number, location, position"
+            isActive={pathname === `/epwp/${allocationId}`}
+          />
+          <DocLink
             label="GPS Coordinates"
             href={`/coordinates/${allocationId}`}
             icon={<MapPin className="w-4 h-4" />}
@@ -116,6 +136,15 @@ export default function DocumentSidebar({
             description="Aging & transaction history"
             isActive={pathname === `/statement/${allocationId}`}
           />
+          {bundleInvoiceId && (
+            <DocLink
+              label="Full Document Bundle"
+              href={`/bundle/${bundleInvoiceId}`}
+              icon={<Layers className="w-4 h-4" />}
+              description="All documents, one print action"
+              isActive={pathname === `/bundle/${bundleInvoiceId}`}
+            />
+          )}
         </div>
       </div>
 

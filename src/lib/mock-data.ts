@@ -18,6 +18,23 @@ export const contract = {
   bankName: 'Nedbank Limited',
   accountNumber: '1323687157',
   branchCode: '198765',
+
+  // ── Service provider letterhead (matches the Tshwane-approved document headers) ──
+  vatNumber: '4070272101',
+  vendorNumber: '101776',
+  regNo: '2013/029173/07',
+  addressLines: ['285 Erasmus Ave', 'Raslouw AH', 'Centurion', '0157'],
+  tel: '012 880 3155',
+  cell: '073 124 1535',
+  fax: '086 603 7935',
+  email: 'accounts@sithembe.co.za',
+  emailAlt: 'info@sithembe.co.za',
+  website: 'www.sithembe.co.za',
+
+  // ── Client (City of Tshwane) letterhead details ──
+  clientVatNumber: '4000142267',
+  clientAddressLines: ['PO Box 6338', 'Pretoria', '0001'],
+  clientTel: '012 358 3368',
 };
 
 export const regions = [
@@ -79,28 +96,30 @@ export const allocations = [
 // GPS coordinates are approximate (decimal) for the area locations near Tshwane
 export const areas = [
   // Region 2 — 13 areas, 596 toilets total
-  { id: 'ar-001', allocationId: 'a-001', name: 'Themba View Ext 1', toiletCount: 8, siteCoordinatorId: 'e-001', lat: -25.4020, lng: 28.2940 },
-  { id: 'ar-002', allocationId: 'a-001', name: 'Marokolong', toiletCount: 11, siteCoordinatorId: 'e-002', lat: -25.3740, lng: 28.1160 },
-  { id: 'ar-003', allocationId: 'a-001', name: 'Hammanskraal Ext 4', toiletCount: 30, siteCoordinatorId: 'e-003', lat: -25.3920, lng: 28.2830 },
-  { id: 'ar-004', allocationId: 'a-001', name: 'Hammanskraal portion 9 & 10', toiletCount: 160, siteCoordinatorId: 'e-004', lat: -25.3890, lng: 28.2790 },
-  { id: 'ar-005', allocationId: 'a-001', name: 'Soshanguve X Buffer C', toiletCount: 50, siteCoordinatorId: 'e-005', lat: -25.5240, lng: 28.1030 },
-  { id: 'ar-006', allocationId: 'a-001', name: 'Soshanguve X Buffer D', toiletCount: 60, siteCoordinatorId: 'e-006', lat: -25.5260, lng: 28.1050 },
-  { id: 'ar-007', allocationId: 'a-001', name: 'Soshanguve X Buffer Civcon', toiletCount: 10, siteCoordinatorId: 'e-007', lat: -25.5280, lng: 28.1070 },
-  { id: 'ar-008', allocationId: 'a-001', name: 'Dali Mpofu', toiletCount: 40, siteCoordinatorId: 'e-008', lat: -25.5120, lng: 28.0980 },
-  { id: 'ar-009', allocationId: 'a-001', name: 'Stinkwater', toiletCount: 3, siteCoordinatorId: 'e-009', lat: -25.5400, lng: 28.1120 },
-  { id: 'ar-010', allocationId: 'a-001', name: 'Stinkwater Ext 10', toiletCount: 70, siteCoordinatorId: 'e-010', lat: -25.5430, lng: 28.1150 },
-  { id: 'ar-011', allocationId: 'a-001', name: 'Chris Hani', toiletCount: 80, siteCoordinatorId: 'e-011', lat: -25.5580, lng: 28.1200 },
-  { id: 'ar-012', allocationId: 'a-001', name: 'Phomolong Phase 1', toiletCount: 59, siteCoordinatorId: 'e-012', lat: -25.4980, lng: 28.0880 },
-  { id: 'ar-013', allocationId: 'a-001', name: 'Greenfield Ext 14', toiletCount: 15, siteCoordinatorId: 'e-013', lat: -25.4860, lng: 28.0950 },
+  // rowNumber matches the actual row numbering used on the Tshwane-approved invoice
+  // (source skips 2 and 5 — areas removed from the contract before this numbering was fixed).
+  { id: 'ar-001', allocationId: 'a-001', name: 'Themba View Ext 1', toiletCount: 8, siteCoordinatorId: 'e-001', lat: -25.4020, lng: 28.2940, rowNumber: 1 },
+  { id: 'ar-002', allocationId: 'a-001', name: 'Marokolong', toiletCount: 11, siteCoordinatorId: 'e-002', lat: -25.3740, lng: 28.1160, rowNumber: 3 },
+  { id: 'ar-003', allocationId: 'a-001', name: 'Hammanskraal Ext 4', toiletCount: 30, siteCoordinatorId: 'e-003', lat: -25.3920, lng: 28.2830, rowNumber: 4 },
+  { id: 'ar-004', allocationId: 'a-001', name: 'Hammanskraal portion 9 & 10', toiletCount: 160, siteCoordinatorId: 'e-004', lat: -25.3890, lng: 28.2790, rowNumber: 6 },
+  { id: 'ar-005', allocationId: 'a-001', name: 'Soshanguve X Buffer C', toiletCount: 50, siteCoordinatorId: 'e-005', lat: -25.5240, lng: 28.1030, rowNumber: 7 },
+  { id: 'ar-006', allocationId: 'a-001', name: 'Soshanguve X Buffer D', toiletCount: 60, siteCoordinatorId: 'e-006', lat: -25.5260, lng: 28.1050, rowNumber: 8 },
+  { id: 'ar-007', allocationId: 'a-001', name: 'Soshanguve X Buffer Civcon', toiletCount: 10, siteCoordinatorId: 'e-007', lat: -25.5280, lng: 28.1070, rowNumber: 9 },
+  { id: 'ar-008', allocationId: 'a-001', name: 'Dali Mpofu', toiletCount: 40, siteCoordinatorId: 'e-008', lat: -25.5120, lng: 28.0980, rowNumber: 10 },
+  { id: 'ar-009', allocationId: 'a-001', name: 'Stinkwater', toiletCount: 3, siteCoordinatorId: 'e-009', lat: -25.5400, lng: 28.1120, rowNumber: 11 },
+  { id: 'ar-010', allocationId: 'a-001', name: 'Stinkwater Ext 10', toiletCount: 70, siteCoordinatorId: 'e-010', lat: -25.5430, lng: 28.1150, rowNumber: 12 },
+  { id: 'ar-011', allocationId: 'a-001', name: 'Chris Hani', toiletCount: 80, siteCoordinatorId: 'e-011', lat: -25.5580, lng: 28.1200, rowNumber: 13 },
+  { id: 'ar-012', allocationId: 'a-001', name: 'Phomolong Phase 1', toiletCount: 59, siteCoordinatorId: 'e-012', lat: -25.4980, lng: 28.0880, rowNumber: 14 },
+  { id: 'ar-013', allocationId: 'a-001', name: 'Greenfield Ext 14', toiletCount: 15, siteCoordinatorId: 'e-013', lat: -25.4860, lng: 28.0950, rowNumber: 15 },
 
   // Region 5 — 3 areas, 35 toilets total
-  { id: 'ar-014', allocationId: 'a-002', name: 'Wallmansthall Berlin', toiletCount: 22, siteCoordinatorId: 'e-014', lat: -25.7450, lng: 28.3850 },
-  { id: 'ar-015', allocationId: 'a-002', name: 'Rayton Plot 121', toiletCount: 1, siteCoordinatorId: 'e-015', lat: -25.7380, lng: 28.4240 },
-  { id: 'ar-016', allocationId: 'a-002', name: 'Pienaarspoort Ext 22', toiletCount: 12, siteCoordinatorId: 'e-016', lat: -25.7300, lng: 28.3920 },
+  { id: 'ar-014', allocationId: 'a-002', name: 'Wallmansthall Berlin', toiletCount: 22, siteCoordinatorId: 'e-014', lat: -25.7450, lng: 28.3850, rowNumber: 1 },
+  { id: 'ar-015', allocationId: 'a-002', name: 'Rayton Plot 121', toiletCount: 1, siteCoordinatorId: 'e-015', lat: -25.7380, lng: 28.4240, rowNumber: 2 },
+  { id: 'ar-016', allocationId: 'a-002', name: 'Pienaarspoort Ext 22', toiletCount: 12, siteCoordinatorId: 'e-016', lat: -25.7300, lng: 28.3920, rowNumber: 3 },
 
   // Region 5 — 2 phases (July: staggered delivery 1st & 4th)
-  { id: 'ar-017', allocationId: 'a-003', name: 'Leeuwfontein Ext 32 (Phase 1)', toiletCount: 10, siteCoordinatorId: 'e-017', lat: -25.7700, lng: 28.4520 },
-  { id: 'ar-018', allocationId: 'a-003', name: 'Leeuwfontein Ext 32 (Phase 2)', toiletCount: 10, siteCoordinatorId: 'e-017', lat: -25.7700, lng: 28.4520 },
+  { id: 'ar-017', allocationId: 'a-003', name: 'Leeuwfontein Ext 32 (Phase 1)', toiletCount: 10, siteCoordinatorId: 'e-017', lat: -25.7700, lng: 28.4520, rowNumber: 1 },
+  { id: 'ar-018', allocationId: 'a-003', name: 'Leeuwfontein Ext 32 (Phase 2)', toiletCount: 10, siteCoordinatorId: 'e-017', lat: -25.7700, lng: 28.4520, rowNumber: 2 },
 ];
 
 export const employees = [
@@ -153,6 +172,16 @@ export const employees = [
   { id: 'e-123', areaId: 'ar-017', fullname: 'Mathabo Moabi',   position: 'Cleaner' as const },
   { id: 'e-124', areaId: 'ar-017', fullname: 'Katlego Mokoena', position: 'Cleaner' as const },
 ];
+
+// ── Restricted table: employee ID numbers ────────────────────────────────────
+// POPIA-protected — deliberately kept out of the `employees` export above and
+// only looked up by the EPWP Employee List document (the one Excel-approved
+// document that requires it). Values here are fabricated placeholders, not
+// real ID numbers — replace via the restricted table once the real migration
+// runs (see HS02-Data-Handling-POPIA.md).
+export const employeeIdNumbers: Record<string, string> = Object.fromEntries(
+  employees.map((e, i) => [e.id, `${8000000000000 + i * 137}`]),
+);
 
 export const serviceSchedules = [
   { id: 'ss-001', allocationId: 'a-001', day1: 'Monday',   day2: 'Thursday',  effectiveFrom: '2026-03-01', effectiveTo: null },

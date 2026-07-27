@@ -5,6 +5,7 @@ import {
   allocations, invoices, payments, fmt, fmtDate,
 } from '@/lib/mock-data';
 import { company } from '@/config/company';
+import { sumGross, sumPayments, computeOutstanding } from '@/engine';
 import { ChevronRight } from 'lucide-react';
 
 export default function StatementHubPage() {
@@ -13,12 +14,9 @@ export default function StatementHubPage() {
   // Compute summary stats per allocation
   const rows = allocations.map((a) => {
     const allocInvoices = invoices.filter((i) => i.allocationId === a.id);
-    const totalDebit = allocInvoices.reduce((s, i) => s + i.gross, 0);
-    const totalPaid = allocInvoices.reduce((s, i) => {
-      const paid = payments.filter((p) => p.invoiceId === i.id).reduce((sp, p) => sp + p.amount, 0);
-      return s + paid;
-    }, 0);
-    const outstanding = totalDebit - totalPaid;
+    const totalDebit = sumGross(allocInvoices);
+    const totalPaid = sumPayments(payments.filter((p) => allocInvoices.some((i) => i.id === p.invoiceId)));
+    const outstanding = computeOutstanding(totalDebit, totalPaid);
     return {
       id: a.id,
       region: a.regionName,

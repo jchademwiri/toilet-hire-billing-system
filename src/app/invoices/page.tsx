@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { invoices, fmt, fmtDate } from '@/lib/mock-data';
+import { sumGross } from '@/engine';
 import { FileText, ChevronRight, AlertCircle, CheckCircle2, Clock, Filter } from 'lucide-react';
 
 type StatusFilter = 'All' | 'PAID' | 'OUTSTANDING' | 'DRAFT';
@@ -33,7 +34,7 @@ export default function InvoicesPage() {
     (i) => statusFilter === 'All' || i.paymentStatus === statusFilter
   );
 
-  const totalGross = filtered.reduce((s, i) => s + i.gross, 0);
+  const totalGross = sumGross(filtered);
 
   return (
     <main className="flex-1 p-8">
@@ -51,8 +52,8 @@ export default function InvoicesPage() {
         <div className="grid grid-cols-3 gap-4">
           {[
             { label: 'Total invoices', value: invoices.length.toString() },
-            { label: 'Outstanding', value: fmt(invoices.filter((i) => i.paymentStatus === 'OUTSTANDING').reduce((s, i) => s + i.gross, 0)) },
-            { label: 'Collected', value: fmt(invoices.filter((i) => i.paymentStatus === 'PAID').reduce((s, i) => s + i.gross, 0)) },
+            { label: 'Outstanding', value: fmt(sumGross(invoices.filter((i) => i.paymentStatus === 'OUTSTANDING'))) },
+            { label: 'Collected', value: fmt(sumGross(invoices.filter((i) => i.paymentStatus === 'PAID'))) },
           ].map(({ label, value }) => (
             <div key={label} className="rounded-xl border border-border bg-card px-5 py-4">
               <p className="text-xs text-muted-foreground mb-1">{label}</p>

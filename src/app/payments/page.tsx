@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { payments, invoices, fmt, fmtDate } from '@/lib/mock-data';
+import { sumPayments } from '@/engine';
 import { Plus, CreditCard } from 'lucide-react';
 
 export default function PaymentsPage() {
@@ -13,7 +14,7 @@ export default function PaymentsPage() {
     return { ...p, invoice };
   });
 
-  const total = payments.reduce((s, p) => s + p.amount, 0);
+  const total = sumPayments(payments);
 
   return (
     <main className="flex-1 p-8">

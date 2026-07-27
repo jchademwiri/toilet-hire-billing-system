@@ -116,7 +116,7 @@ export default function DocumentSidebar({
             isActive={pathname === `/epwp/${allocationId}`}
           />
           <DocLink
-            label="GPS Coordinates"
+            label="GPS Co-ordinates"
             href={`/coordinates/${allocationId}`}
             icon={<MapPin className="w-4 h-4" />}
             description="Toilet locations per area"

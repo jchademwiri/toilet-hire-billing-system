@@ -2,40 +2,10 @@ import {
   invoices, payments, allocations, contract, fmt, fmtDate,
 } from '@/lib/mock-data';
 import { company } from '@/config/company';
+import { sumPayments, getAgingBucket, AGING_BUCKETS } from '@/engine';
 import { A4Page } from './A4Page';
 import { DocumentHeader } from './DocumentHeader';
 import { DocumentFooter } from './DocumentFooter';
-
-// ── Aging logic ──────────────────────────────────────────────────────────────
-
-type AgingBucket = 'current' | '30' | '60' | '90plus';
-
-function getAgingBucket(invoiceDate: string, status: string): AgingBucket {
-  if (status !== 'OUTSTANDING') return 'current';
-
-  const today = new Date();
-  const issued = new Date(invoiceDate);
-
-  // "Current" always means this calendar month's invoice — not just anything
-  // under 30 days old, which would wrongly lump last month's invoice in with
-  // this month's whenever the billing date lands late in the month.
-  const isCurrentMonth = issued.getUTCFullYear() === today.getUTCFullYear()
-    && issued.getUTCMonth() === today.getUTCMonth();
-  if (isCurrentMonth) return 'current';
-
-  // Everything else ages by days since the invoice date.
-  const days = Math.floor((today.getTime() - issued.getTime()) / 86400000);
-  if (days <= 60) return '30';
-  if (days <= 90) return '60';
-  return '90plus';
-}
-
-const BUCKETS: { key: AgingBucket; label: string }[] = [
-  { key: '90plus', label: '90+ days' },
-  { key: '60', label: '61–90 days' },
-  { key: '30', label: '31–60 days' },
-  { key: 'current', label: 'Current (0–30 days)' },
-];
 
 // ── A4 Statement Document (per allocation) ───────────────────────────────────
 
@@ -48,9 +18,7 @@ export function StatementDocument({ allocationId }: { allocationId: string }) {
     .sort((a, b) => new Date(b.invoiceDate).getTime() - new Date(a.invoiceDate).getTime());
   const latestInvoiceDate = allocInvoices[0]?.invoiceDate ?? allocation.deliveryDate;
   const enriched = allocInvoices.map((inv) => {
-    const paid = payments
-      .filter((p) => p.invoiceId === inv.id)
-      .reduce((s, p) => s + p.amount, 0);
+    const paid = sumPayments(payments.filter((p) => p.invoiceId === inv.id));
     return {
       ...inv,
       debit: inv.gross,
@@ -68,7 +36,7 @@ export function StatementDocument({ allocationId }: { allocationId: string }) {
 
   return (
     <A4Page id="statement-document">
-      <DocumentHeader title="PROJECT STATEMENT" />
+      <DocumentHeader title="PROJECT STATEMENT" context={allocation.regionName} />
 
       {/* ── Header info ── */}
       <div className="text-xs text-zinc-600 mb-6 pb-4 border-b border-zinc-200">
@@ -118,7 +86,7 @@ export function StatementDocument({ allocationId }: { allocationId: string }) {
       <div className="mb-8">
         <h3 className="text-xs font-semibold text-zinc-800 mb-3 uppercase tracking-wider">Aging Summary</h3>
         <div className="grid grid-cols-5 gap-px bg-zinc-300 border border-zinc-300 rounded overflow-hidden">
-          {BUCKETS.map((b) => {
+          {AGING_BUCKETS.map((b) => {
             const total = sorted
               .filter((i) => getAgingBucket(i.invoiceDate, i.paymentStatus) === b.key)
               .reduce((s, i) => s + (i.debit - i.credit), 0);

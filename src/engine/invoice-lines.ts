@@ -1,8 +1,9 @@
 import { billingPeriods, areas, serviceSchedules, contract } from '@/lib/mock-data';
 
 // ── Per-area billing computation ─────────────────────────────────────────────
-// Shared by the Tax Invoice document and the Document Bundle — kept out of any
-// route's page.tsx so it can be imported across routes without coupling them.
+// The base of every billing calculation in the app: turns an allocation +
+// billing period into per-area rental/service line items. Everything else in
+// the engine (invoice totals, the billing hub preview) builds on this.
 
 export function computeAreaLines(allocationId: string, periodId: string) {
   const period = billingPeriods.find((p) => p.id === periodId);
@@ -46,3 +47,5 @@ export function computeAreaLines(allocationId: string, periodId: string) {
     };
   });
 }
+
+export type AreaLine = ReturnType<typeof computeAreaLines>[number];

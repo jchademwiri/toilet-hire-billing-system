@@ -169,7 +169,7 @@ export default async function AllocationDetailPage({ params }: { params: Promise
                   className="flex items-center gap-3 px-5 py-3 hover:bg-muted/30 transition group"
                 >
                   <MapPin className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="text-xs font-medium text-foreground">GPS Coordinates</span>
+                  <span className="text-xs font-medium text-foreground">GPS Co-ordinates</span>
                   <ChevronRight className="w-3.5 h-3.5 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition" />
                 </Link>
                 <Link

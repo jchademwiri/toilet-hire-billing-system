@@ -3,45 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  allocations, billingPeriods, areas, serviceSchedules, contract, fmt, fmtDate,
+  allocations, billingPeriods, contract, fmt, fmtDate,
 } from '@/lib/mock-data';
+import { computeBilling } from '@/engine';
 import { Calculator, FileText, ChevronDown, CheckCircle2, AlertCircle } from 'lucide-react';
-
-// Compute a billing preview for an allocation + period
-function computeBilling(allocationId: string, periodId: string) {
-  const period = billingPeriods.find((p) => p.id === periodId);
-  if (!period) return null;
-
-  const allocationAreas = areas.filter((a) => a.allocationId === allocationId);
-  const schedule = serviceSchedules.find((s) => s.allocationId === allocationId);
-
-  const start = new Date(period.periodStart);
-  const end = new Date(period.periodEnd);
-  const daysInPeriod = Math.round((end.getTime() - start.getTime()) / 86400000) + 1;
-
-  // Count service days in period matching the scheduled weekdays
-  const dayMap: Record<string, number> = {
-    Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5,
-  };
-  let serviceDays = 0;
-  if (schedule) {
-    const targets = new Set([dayMap[schedule.day1], dayMap[schedule.day2]]);
-    const cursor = new Date(start);
-    while (cursor <= end) {
-      if (targets.has(cursor.getDay())) serviceDays++;
-      cursor.setDate(cursor.getDate() + 1);
-    }
-  }
-
-  const totalToilets = allocationAreas.reduce((s, a) => s + a.toiletCount, 0);
-  const rentalAmount = totalToilets * daysInPeriod * contract.rentalRate;
-  const serviceAmount = totalToilets * serviceDays * contract.serviceRate;
-  const subtotal = rentalAmount + serviceAmount;
-  const vat = subtotal * (contract.vatRate / 100);
-  const gross = subtotal + vat;
-
-  return { daysInPeriod, serviceDays, totalToilets, rentalAmount, serviceAmount, subtotal, vat, gross };
-}
 
 export default function BillingHubPage() {
   const [selectedAllocation, setSelectedAllocation] = useState(allocations[0].id);

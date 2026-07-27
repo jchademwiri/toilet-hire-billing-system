@@ -7,7 +7,16 @@ import { company } from '@/config/company';
 // only the `title` text changes between documents, never the layout or
 // colors, so every printout reads as part of the same set.
 
-export function DocumentHeader({ title }: { title: string }) {
+export function DocumentHeader({
+  title,
+  context,
+}: {
+  title: string;
+  /** What this specific document is about — region for an allocation-level
+   *  document, area name for a per-area one (e.g. Coordinates). Shown on the
+   *  left of the title bar, opposite the document name. */
+  context?: string;
+}) {
   return (
     <div className="mb-4">
       <div className="flex justify-between items-start pb-3 mb-3">
@@ -26,9 +35,9 @@ export function DocumentHeader({ title }: { title: string }) {
           priority
         />
       </div>
-      <div className="flex justify-between items-center bg-zinc-100 border border-zinc-200 px-4 py-2">
-        <h2 className="text-sm font-bold tracking-wide text-zinc-700">{company.name.toUpperCase()}</h2>
-        <p className="text-sm font-bold text-zinc-700">{title}</p>
+      <div className="flex items-center bg-zinc-100 border border-zinc-200 px-4 py-2">
+        {context && <h2 className="text-sm font-bold tracking-wide text-zinc-700">{context}</h2>}
+        <p className="text-sm font-bold text-zinc-700 ml-auto">{title}</p>
       </div>
     </div>
   );

@@ -233,7 +233,7 @@ function Step3({ areas, onNext, onBack }: {
       <div>
         <h2 className="text-xl font-semibold text-foreground mb-1">Toilet enrollment</h2>
         <p className="text-muted-foreground text-sm">
-          Enter toilet numbers, GPS coordinates, and type for each area.
+          Enter toilet numbers, GPS co-ordinates, and type for each area.
         </p>
       </div>
 

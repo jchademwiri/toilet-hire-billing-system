@@ -60,7 +60,7 @@ export function ServiceNotesDocument({
 
   return (
     <A4Page id="service-notes-document" orientation="landscape">
-      <DocumentHeader title="SERVICE NOTES" />
+      <DocumentHeader title="SERVICE NOTES" context={allocation.regionName} />
 
       {/* ── Contract line ── */}
       <div className="text-xs text-zinc-700 leading-snug mb-4">
@@ -78,26 +78,26 @@ export function ServiceNotesDocument({
         <thead>
           <tr className="bg-zinc-100">
             <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">TOWNSHIP / INFORMAL SETTLEMENT</th>
-            <th className="text-right py-1.5 px-2 font-semibold border border-zinc-300">Qty (Units)</th>
+            <th className="text-center py-1.5 px-2 font-semibold border border-zinc-300">Qty (Units)</th>
             {serviceDates.map((d) => (
               <th key={d.date} className="text-center py-1.5 px-2 font-semibold border border-zinc-300 whitespace-nowrap">
                 {d.dayName}
               </th>
             ))}
-            <th className="text-right py-1.5 px-2 font-semibold border border-zinc-300 whitespace-nowrap">No of Service</th>
+            <th className="text-center py-1.5 px-2 font-semibold border border-zinc-300 whitespace-nowrap">No of Service</th>
           </tr>
         </thead>
         <tbody>
           {allocationAreas.map((area) => (
             <tr key={area.id}>
               <td className="py-1 px-2 border border-zinc-200 text-zinc-800">{area.name}</td>
-              <td className="py-1 px-2 border border-zinc-200 text-right">{area.toiletCount}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-center">{area.toiletCount}</td>
               {serviceDates.map((d) => (
                 <td key={d.date} className="py-1 px-2 border border-zinc-200 text-center whitespace-nowrap text-zinc-700">
                   {fmtDate(d.date)}
                 </td>
               ))}
-              <td className="py-1 px-2 border border-zinc-200 text-right font-medium">{serviceDates.length}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-center font-medium">{serviceDates.length}</td>
             </tr>
           ))}
         </tbody>

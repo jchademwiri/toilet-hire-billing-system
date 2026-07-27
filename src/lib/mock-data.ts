@@ -93,7 +93,7 @@ export const allocations = [
 
 // ── Real areas from actual July 2026 invoices ────────────────────────────────
 // Source: docs/excel-sheets/
-// GPS coordinates are approximate (decimal) for the area locations near Tshwane
+// GPS co-ordinates are approximate (decimal) for the area locations near Tshwane
 export const areas = [
   // Region 2 — 13 areas, 596 toilets total
   // rowNumber matches the actual row numbering used on the Tshwane-approved invoice

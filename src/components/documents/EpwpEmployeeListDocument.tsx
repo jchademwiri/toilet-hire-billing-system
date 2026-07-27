@@ -38,7 +38,7 @@ export function EpwpEmployeeListDocument({
 
   return (
     <A4Page id="epwp-document">
-      <DocumentHeader title="EPWP EMPLOYEE LIST" />
+      <DocumentHeader title="EPWP EMPLOYEE LIST" context={allocation.regionName} />
 
       {/* ── Table ── */}
       <table className="w-full text-xs border-collapse mb-10">

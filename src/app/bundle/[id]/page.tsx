@@ -7,7 +7,7 @@ import PrintButton from '@/components/PrintButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
 import { BundlePrintStyles } from '@/components/documents/PrintStyles';
 import { ArrowLeft } from 'lucide-react';
-import { computeAreaLines } from '@/lib/invoice-lines';
+import { computeAreaLines } from '@/engine';
 import { InvoiceDocument } from '@/components/documents/InvoiceDocument';
 import { ServiceNotesDocument } from '@/components/documents/ServiceNotesDocument';
 import { CleaningScheduleDocument } from '@/components/documents/CleaningScheduleDocument';
@@ -17,7 +17,7 @@ import { CoordinatesDocument } from '@/components/documents/CoordinatesDocument'
 // ── Document Bundle / Previewer ──────────────────────────────────────────────
 // Renders the full client-facing submission set for one invoice period in one
 // place — Tax Invoice, Service Notes, Weekly Cleaning Schedule, EPWP Employee
-// List, GPS Coordinates — so it can be reviewed and printed as a single PDF,
+// List, GPS Co-ordinates — so it can be reviewed and printed as a single PDF,
 // matching how the real Excel workbook exports as one multi-page document.
 //
 // TODO(auth): this route embeds EpwpEmployeeListDocument, so the same missing

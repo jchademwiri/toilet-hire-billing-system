@@ -17,7 +17,7 @@ export function ScheduleDocument({ allocationId }: { allocationId: string }) {
 
   return (
     <A4Page id="schedule-document">
-      <DocumentHeader title="SERVICE SCHEDULE" />
+      <DocumentHeader title="SERVICE SCHEDULE" context={allocation.regionName} />
 
       {/* ── Info line ── */}
       <div className="text-xs text-zinc-600 mb-6 pb-4 border-b border-zinc-200">

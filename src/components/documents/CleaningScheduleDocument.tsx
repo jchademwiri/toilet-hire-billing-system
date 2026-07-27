@@ -34,23 +34,23 @@ export function CleaningScheduleDocument({
 
   return (
     <A4Page id="cleaning-schedule-document">
-      <DocumentHeader title="WEEKLY CLEANING SCHEDULE" />
+      <DocumentHeader title="WEEKLY CLEANING SCHEDULE" context={allocation.regionName} />
 
       {/* ── Table ── */}
       <table className="w-full text-xs border-collapse mb-10">
         <thead>
           <tr className="bg-zinc-100">
             <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">Informal Settlement Area</th>
-            <th className="text-right py-1.5 px-2 font-semibold border border-zinc-300">No of Toilets</th>
-            <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">Weekly Cleaning Dates</th>
+            <th className="text-center py-1.5 px-2 font-semibold border border-zinc-300">No of Toilets</th>
+            <th className="text-center py-1.5 px-2 font-semibold border border-zinc-300">Weekly Cleaning Dates</th>
           </tr>
         </thead>
         <tbody>
           {allocationAreas.map((area) => (
             <tr key={area.id}>
               <td className="py-1 px-2 border border-zinc-200 text-zinc-800">{area.name}</td>
-              <td className="py-1 px-2 border border-zinc-200 text-right">{area.toiletCount}</td>
-              <td className="py-1 px-2 border border-zinc-200 text-zinc-700">{cleaningDates}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-center">{area.toiletCount}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-center text-zinc-700">{cleaningDates}</td>
             </tr>
           ))}
         </tbody>

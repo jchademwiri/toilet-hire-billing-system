@@ -7,7 +7,7 @@ import PrintButton from '@/components/PrintButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
 import { PrintStyles } from '@/components/documents/PrintStyles';
 import { ArrowLeft, CheckCircle2, AlertCircle, Clock, RefreshCw } from 'lucide-react';
-import { computeAreaLines } from '@/lib/invoice-lines';
+import { computeAreaLines, sumPayments, computeOutstanding } from '@/engine';
 import { InvoiceDocument } from '@/components/documents/InvoiceDocument';
 
 // ── Status badge ─────────────────────────────────────────────────────────────
@@ -40,8 +40,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
   const period = billingPeriods.find((p) => p.id === invoice.billingPeriodId);
   const allocation = allocations.find((a) => a.id === invoice.allocationId);
   const invoicePayments = payments.filter((p) => p.invoiceId === id);
-  const totalPaid = invoicePayments.reduce((s, p) => s + p.amount, 0);
-  const outstanding = invoice.gross - totalPaid;
+  const totalPaid = sumPayments(invoicePayments);
+  const outstanding = computeOutstanding(invoice.gross, totalPaid);
 
   const lines = computeAreaLines(invoice.allocationId, invoice.billingPeriodId);
 

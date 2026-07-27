@@ -54,7 +54,7 @@ function generateToiletNumbers(area: typeof areas[number]) {
   return Array.from({ length: area.toiletCount }, (_, i) => base + i);
 }
 
-// ── A4 GPS Coordinates Document ──────────────────────────────────────────────
+// ── A4 GPS Co-ordinates Document ─────────────────────────────────────────────
 
 export function CoordinatesDocument({
   allocationId,
@@ -92,7 +92,7 @@ export function CoordinatesDocument({
         const toiletNums = generateToiletNumbers(area);
         return (
           <A4Page key={area.id} pageBreakAfter>
-            <DocumentHeader title="GPS COORDINATES" />
+            <DocumentHeader title="GPS CO-ORDINATES" context={area.name} />
 
             {/* ── Context line ── */}
             <div className="text-xs text-zinc-600 mb-4">
@@ -101,24 +101,21 @@ export function CoordinatesDocument({
               <span className="font-semibold">Client:</span> {company.client}
             </div>
 
-            {/* ── Area name heading ── */}
-            <p className="text-sm font-bold text-zinc-900 mb-3 uppercase">{area.name}</p>
-
             {/* ── Coordinates table (matches EXACT Excel format) ── */}
             <table className="w-full text-xs border-collapse mb-4">
               <thead>
                 <tr className="bg-zinc-100">
-                  <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300 w-10">Number</th>
-                  <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">Toilet Number</th>
-                  <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">Co-ordinates</th>
+                  <th className="text-center py-1.5 px-2 font-semibold border border-zinc-300 w-10">Number</th>
+                  <th className="text-center py-1.5 px-2 font-semibold border border-zinc-300">Toilet Number</th>
+                  <th className="text-center py-1.5 px-2 font-semibold border border-zinc-300">Co-ordinates</th>
                 </tr>
               </thead>
               <tbody>
                 {toiletNums.map((num, i) => (
                   <tr key={i}>
-                    <td className="py-1 px-2 border border-zinc-200 text-zinc-700">{i + 1}</td>
-                    <td className="py-1 px-2 border border-zinc-200 font-medium">{num}</td>
-                    <td className="py-1 px-2 border border-zinc-200 text-zinc-700">{coord}</td>
+                    <td className="py-1 px-2 border border-zinc-200 text-center text-zinc-700">{i + 1}</td>
+                    <td className="py-1 px-2 border border-zinc-200 text-center font-medium">{num}</td>
+                    <td className="py-1 px-2 border border-zinc-200 text-center text-zinc-700">{coord}</td>
                   </tr>
                 ))}
               </tbody>

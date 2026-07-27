@@ -3,6 +3,9 @@ import {
 } from '@/lib/mock-data';
 import { company } from '@/config/company';
 import Image from 'next/image';
+import { A4Page } from './A4Page';
+import { DocumentHeader } from './DocumentHeader';
+import { DocumentFooter } from './DocumentFooter';
 
 // ── Helper: DMS formatting ───────────────────────────────────────────────────
 
@@ -88,45 +91,15 @@ export function CoordinatesDocument({
         const coord = toDMS(area.lat, area.lng);
         const toiletNums = generateToiletNumbers(area);
         return (
-          <div
-            key={area.id}
-            className="bg-white text-zinc-900 shadow-xl mx-auto"
-            style={{
-              width: '210mm',
-              minHeight: '297mm',
-              padding: '15mm 20mm',
-              fontFamily: 'var(--font-inter), Arial, sans-serif',
-              fontSize: '9pt',
-              lineHeight: '1.5',
-              pageBreakAfter: 'always',
-            }}
-          >
-            {/* ── Header ── */}
-            <div className="flex justify-between items-start border-b-2 border-zinc-900 pb-4 mb-6">
-              <div className="flex items-start gap-3">
-                <Image
-                  src={company.logoPath}
-                  alt={company.shortName}
-                  width={80}
-                  height={37}
-                  className="object-contain shrink-0 mt-0.5"
-                  priority
-                />
-                <div>
-                  <h1 className="text-lg font-bold tracking-tight">{company.name}</h1>
-                  <p className="text-xs text-zinc-600 mt-0.5">Contract {contract.reference}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-bold tracking-wide uppercase">GPS Coordinates</p>
-                <p className="text-xs text-zinc-600 mt-0.5">{company.client}</p>
-              </div>
-            </div>
+          <A4Page key={area.id} pageBreakAfter>
+            <DocumentHeader title="GPS COORDINATES" />
 
-            {/* ── Service period header ── */}
-            <p className="text-xs font-semibold text-zinc-800 mb-4">
-              SERVICE PERIOD: {servicePeriodLabel}
-            </p>
+            {/* ── Context line ── */}
+            <div className="text-xs text-zinc-600 mb-4">
+              <span className="font-semibold">Contract:</span> {contract.reference} &middot;{' '}
+              <span className="font-semibold">Service Period:</span> {servicePeriodLabel} &middot;{' '}
+              <span className="font-semibold">Client:</span> {company.client}
+            </div>
 
             {/* ── Area name heading ── */}
             <p className="text-sm font-bold text-zinc-900 mb-3 uppercase">{area.name}</p>
@@ -134,18 +107,18 @@ export function CoordinatesDocument({
             {/* ── Coordinates table (matches EXACT Excel format) ── */}
             <table className="w-full text-xs border-collapse mb-4">
               <thead>
-                <tr className="border-b-2 border-zinc-900">
-                  <th className="text-left py-1.5 pr-3 font-semibold w-10">Number</th>
-                  <th className="text-left py-1.5 pr-3 font-semibold">Toilet Number</th>
-                  <th className="text-left py-1.5 font-semibold">Co-ordinates</th>
+                <tr className="bg-zinc-100">
+                  <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300 w-10">Number</th>
+                  <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">Toilet Number</th>
+                  <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">Co-ordinates</th>
                 </tr>
               </thead>
               <tbody>
                 {toiletNums.map((num, i) => (
-                  <tr key={i} className="border-b border-zinc-200">
-                    <td className="py-1 pr-3 text-zinc-700">{i + 1}</td>
-                    <td className="py-1 pr-3 font-medium">{num}</td>
-                    <td className="py-1 text-zinc-700">{coord}</td>
+                  <tr key={i}>
+                    <td className="py-1 px-2 border border-zinc-200 text-zinc-700">{i + 1}</td>
+                    <td className="py-1 px-2 border border-zinc-200 font-medium">{num}</td>
+                    <td className="py-1 px-2 border border-zinc-200 text-zinc-700">{coord}</td>
                   </tr>
                 ))}
               </tbody>
@@ -178,7 +151,9 @@ export function CoordinatesDocument({
               </p>
               <p className="border-t border-zinc-400 pt-0.5 mt-8 text-xs italic text-zinc-600">Date</p>
             </div>
-          </div>
+
+            <DocumentFooter />
+          </A4Page>
         );
       })}
     </div>

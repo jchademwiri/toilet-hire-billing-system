@@ -4,6 +4,9 @@ import {
 } from '@/lib/mock-data';
 import { company } from '@/config/company';
 import Image from 'next/image';
+import { A4Page } from './A4Page';
+import { DocumentHeader } from './DocumentHeader';
+import { DocumentFooter } from './DocumentFooter';
 
 // ── A4 Service Notes Document (EXACT Excel format) ──────────────────────────
 
@@ -56,40 +59,8 @@ export function ServiceNotesDocument({
   }
 
   return (
-    <div
-      id="service-notes-document"
-      className="bg-white text-zinc-900 shadow-xl mx-auto"
-      style={{
-        width: '297mm',
-        minHeight: '210mm',
-        padding: '15mm 20mm',
-        fontFamily: 'var(--font-inter), Arial, sans-serif',
-        fontSize: '9pt',
-        lineHeight: '1.5',
-      }}
-    >
-      {/* ── Letterhead ── */}
-      <div className="flex justify-between items-start pb-3 mb-3">
-        <div className="text-xs text-zinc-700 leading-snug">
-          <p className="text-sm font-bold text-zinc-900">SERVICE NOTES</p>
-          <p className="font-semibold text-zinc-900 mt-1">{company.name.toUpperCase()}</p>
-          <p>VAT No: {contract.vatNumber}</p>
-          {contract.addressLines.map((line) => <p key={line}>{line}</p>)}
-        </div>
-        <Image
-          src={company.logoPath}
-          alt={company.shortName}
-          width={90}
-          height={40}
-          className="object-contain shrink-0"
-          priority
-        />
-      </div>
-
-      {/* ── Branded title bar ── */}
-      <div className="bg-zinc-900 text-white px-4 py-2 mb-3">
-        <h1 className="text-sm font-bold tracking-wide">{company.name.toUpperCase()}</h1>
-      </div>
+    <A4Page id="service-notes-document" orientation="landscape">
+      <DocumentHeader title="SERVICE NOTES" />
 
       {/* ── Contract line ── */}
       <div className="text-xs text-zinc-700 leading-snug mb-4">
@@ -105,28 +76,28 @@ export function ServiceNotesDocument({
       {/* ── Main table: one column per actual service date ── */}
       <table className="w-full text-xs border-collapse mb-8">
         <thead>
-          <tr className="border-b-2 border-zinc-900">
-            <th className="text-left py-2 pr-3 font-semibold">TOWNSHIP / INFORMAL SETTLEMENT</th>
-            <th className="text-right py-2 px-2 font-semibold">Qty (Units)</th>
+          <tr className="bg-zinc-100">
+            <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">TOWNSHIP / INFORMAL SETTLEMENT</th>
+            <th className="text-right py-1.5 px-2 font-semibold border border-zinc-300">Qty (Units)</th>
             {serviceDates.map((d) => (
-              <th key={d.date} className="text-center py-2 px-2 font-semibold whitespace-nowrap">
+              <th key={d.date} className="text-center py-1.5 px-2 font-semibold border border-zinc-300 whitespace-nowrap">
                 {d.dayName}
               </th>
             ))}
-            <th className="text-right py-2 pl-2 font-semibold whitespace-nowrap">No of Service</th>
+            <th className="text-right py-1.5 px-2 font-semibold border border-zinc-300 whitespace-nowrap">No of Service</th>
           </tr>
         </thead>
         <tbody>
           {allocationAreas.map((area) => (
-            <tr key={area.id} className="border-b border-zinc-200">
-              <td className="py-2 pr-3 text-zinc-800">{area.name}</td>
-              <td className="py-2 px-2 text-right">{area.toiletCount}</td>
+            <tr key={area.id}>
+              <td className="py-1 px-2 border border-zinc-200 text-zinc-800">{area.name}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-right">{area.toiletCount}</td>
               {serviceDates.map((d) => (
-                <td key={d.date} className="py-2 px-2 text-center whitespace-nowrap text-zinc-700">
+                <td key={d.date} className="py-1 px-2 border border-zinc-200 text-center whitespace-nowrap text-zinc-700">
                   {fmtDate(d.date)}
                 </td>
               ))}
-              <td className="py-2 pl-2 text-right font-medium">{serviceDates.length}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-right font-medium">{serviceDates.length}</td>
             </tr>
           ))}
         </tbody>
@@ -153,6 +124,8 @@ export function ServiceNotesDocument({
           <p className="border-t border-zinc-400 pt-0.5 mt-8 text-xs">Date</p>
         </div>
       </div>
-    </div>
+
+      <DocumentFooter />
+    </A4Page>
   );
 }

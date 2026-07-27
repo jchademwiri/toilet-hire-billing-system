@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { allocations, invoices } from '@/lib/mock-data';
 import PrintButton from '@/components/PrintButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
+import { PrintStyles } from '@/components/documents/PrintStyles';
 import { ArrowLeft } from 'lucide-react';
 import { CoordinatesDocument } from '@/components/documents/CoordinatesDocument';
 
@@ -55,20 +56,7 @@ export default async function CoordinatesDetailPage({
         </div>
       </div>
 
-      {/* ── Print styles ── */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media print {
-          @page { margin: 0; size: A4; }
-          html, body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          nav, header, footer, aside, .print\:hidden { display: none !important; }
-          #coordinates-document { display: block; }
-          #coordinates-document > div {
-            visibility: visible;
-            box-shadow: none !important;
-            position: relative;
-          }
-        }
-      `}} />
+      <PrintStyles targetId="coordinates-document" repeatedChildren />
     </main>
   );
 }

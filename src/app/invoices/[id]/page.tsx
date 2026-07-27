@@ -5,6 +5,7 @@ import {
 } from '@/lib/mock-data';
 import PrintButton from '@/components/PrintButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
+import { PrintStyles } from '@/components/documents/PrintStyles';
 import { ArrowLeft, CheckCircle2, AlertCircle, Clock, RefreshCw } from 'lucide-react';
 import { computeAreaLines } from '@/lib/invoice-lines';
 import { InvoiceDocument } from '@/components/documents/InvoiceDocument';
@@ -141,24 +142,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         </div>
       </div>
 
-      {/* ── Print styles ── */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media print {
-          @page { margin: 0; size: A4; }
-          html, body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          body * { visibility: hidden; }
-          #invoice-document, #invoice-document * { visibility: visible; }
-          #invoice-document {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: auto;
-            box-shadow: none !important;
-            padding: 15mm 20mm !important;
-          }
-        }
-      `}} />
+      <PrintStyles targetId="invoice-document" />
     </main>
   );
 }

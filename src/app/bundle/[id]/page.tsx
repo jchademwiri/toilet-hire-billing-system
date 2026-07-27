@@ -5,6 +5,7 @@ import {
 } from '@/lib/mock-data';
 import PrintButton from '@/components/PrintButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
+import { BundlePrintStyles } from '@/components/documents/PrintStyles';
 import { ArrowLeft } from 'lucide-react';
 import { computeAreaLines } from '@/lib/invoice-lines';
 import { InvoiceDocument } from '@/components/documents/InvoiceDocument';
@@ -91,34 +92,10 @@ export default async function DocumentBundlePage({
         </div>
       </div>
 
-      {/* ── Print styles: one section per printed page ── */}
-      {/* Service Notes renders as a 297×210mm landscape page — give it its own
-          named @page so it prints on landscape paper instead of being clipped
-          onto the portrait A4 default, matching its standalone route. */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media print {
-          @page { margin: 0; size: A4; }
-          @page landscape { margin: 0; size: A4 landscape; }
-          html, body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          body * { visibility: hidden; }
-          #document-bundle, #document-bundle * { visibility: visible; }
-          #document-bundle {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-          }
-          .bundle-page {
-            page-break-after: always;
-          }
-          .bundle-page:last-child {
-            page-break-after: auto;
-          }
-          .bundle-page.landscape {
-            page: landscape;
-          }
-        }
-      `}} />
+      {/* Service Notes renders as a 297×210mm landscape page — BundlePrintStyles
+          gives it its own named @page so it prints on landscape paper instead
+          of being clipped onto the portrait A4 default. */}
+      <BundlePrintStyles targetId="document-bundle" />
     </main>
   );
 }

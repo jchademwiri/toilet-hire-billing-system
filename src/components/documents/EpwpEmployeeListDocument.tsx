@@ -1,8 +1,11 @@
 import {
-  allocations, areas, employees, employeeIdNumbers, invoices, contract, fmtDate,
+  allocations, areas, employees, employeeIdNumbers, invoices, fmtDate,
 } from '@/lib/mock-data';
 import { company } from '@/config/company';
 import Image from 'next/image';
+import { A4Page } from './A4Page';
+import { DocumentHeader } from './DocumentHeader';
+import { DocumentFooter } from './DocumentFooter';
 
 // ── A4 EPWP Employee List Document (EXACT Excel format) ─────────────────────
 //
@@ -34,58 +37,26 @@ export function EpwpEmployeeListDocument({
   const docDate = selectedInvoice?.invoiceDate ?? allocation.deliveryDate;
 
   return (
-    <div
-      id="epwp-document"
-      className="bg-white text-zinc-900 shadow-xl mx-auto"
-      style={{
-        width: '210mm',
-        minHeight: '297mm',
-        padding: '15mm 20mm',
-        fontFamily: 'var(--font-inter), Arial, sans-serif',
-        fontSize: '9pt',
-        lineHeight: '1.5',
-      }}
-    >
-      {/* ── Letterhead ── */}
-      <div className="flex justify-between items-start pb-3 mb-4">
-        <div className="text-xs text-zinc-700 leading-snug">
-          <p className="font-semibold text-zinc-900">{company.name.toUpperCase()}</p>
-          <p>VAT No: {contract.vatNumber}</p>
-          {contract.addressLines.map((line) => <p key={line}>{line}</p>)}
-        </div>
-        <Image
-          src={company.logoPath}
-          alt={company.shortName}
-          width={90}
-          height={40}
-          className="object-contain shrink-0"
-          priority
-        />
-      </div>
-
-      {/* ── Branded title bar ── */}
-      <div className="flex justify-between items-center bg-zinc-900 text-white px-4 py-2 mb-6">
-        <h1 className="text-sm font-bold tracking-wide">{company.name.toUpperCase()}</h1>
-        <p className="text-sm font-bold">EPWP Employee List</p>
-      </div>
+    <A4Page id="epwp-document">
+      <DocumentHeader title="EPWP EMPLOYEE LIST" />
 
       {/* ── Table ── */}
       <table className="w-full text-xs border-collapse mb-10">
         <thead>
-          <tr className="border-b-2 border-zinc-900">
-            <th className="text-left py-2 pr-3 font-semibold">FULLNAME</th>
-            <th className="text-left py-2 px-2 font-semibold">ID NUMBER</th>
-            <th className="text-left py-2 px-2 font-semibold">LOCATION</th>
-            <th className="text-left py-2 pl-2 font-semibold">POSITION</th>
+          <tr className="bg-zinc-100">
+            <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">FULLNAME</th>
+            <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">ID NUMBER</th>
+            <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">LOCATION</th>
+            <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">POSITION</th>
           </tr>
         </thead>
         <tbody>
           {allocationEmployees.map((emp) => (
-            <tr key={emp.id} className="border-b border-zinc-200">
-              <td className="py-2 pr-3 text-zinc-800">{emp.fullname}</td>
-              <td className="py-2 px-2 text-zinc-700">{employeeIdNumbers[emp.id] ?? '—'}</td>
-              <td className="py-2 px-2 text-zinc-700">{areaNameById[emp.areaId] ?? '—'}</td>
-              <td className="py-2 pl-2 text-zinc-700">{emp.position}</td>
+            <tr key={emp.id}>
+              <td className="py-1 px-2 border border-zinc-200 text-zinc-800">{emp.fullname}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-zinc-700">{employeeIdNumbers[emp.id] ?? '—'}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-zinc-700">{areaNameById[emp.areaId] ?? '—'}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-zinc-700">{emp.position}</td>
             </tr>
           ))}
         </tbody>
@@ -113,6 +84,8 @@ export function EpwpEmployeeListDocument({
           <p className="border-t border-zinc-400 pt-0.5 mt-8 text-xs">Date</p>
         </div>
       </div>
-    </div>
+
+      <DocumentFooter />
+    </A4Page>
   );
 }

@@ -1,8 +1,11 @@
 import {
-  allocations, areas, invoices, serviceSchedules, contract, fmtDate,
+  allocations, areas, invoices, serviceSchedules, fmtDate,
 } from '@/lib/mock-data';
 import { company } from '@/config/company';
 import Image from 'next/image';
+import { A4Page } from './A4Page';
+import { DocumentHeader } from './DocumentHeader';
+import { DocumentFooter } from './DocumentFooter';
 
 // ── A4 Weekly Cleaning Schedule Document (EXACT Excel format) ───────────────
 
@@ -30,55 +33,24 @@ export function CleaningScheduleDocument({
   const docDate = selectedInvoice?.invoiceDate ?? allocation.deliveryDate;
 
   return (
-    <div
-      id="cleaning-schedule-document"
-      className="bg-white text-zinc-900 shadow-xl mx-auto"
-      style={{
-        width: '210mm',
-        minHeight: '297mm',
-        padding: '15mm 20mm',
-        fontFamily: 'var(--font-inter), Arial, sans-serif',
-        fontSize: '9pt',
-        lineHeight: '1.5',
-      }}
-    >
-      {/* ── Letterhead ── */}
-      <div className="flex justify-between items-start pb-3 mb-4">
-        <div className="text-xs text-zinc-700 leading-snug">
-          <p className="font-semibold text-zinc-900">{company.name.toUpperCase()}</p>
-          <p>VAT No: {contract.vatNumber}</p>
-          {contract.addressLines.map((line) => <p key={line}>{line}</p>)}
-        </div>
-        <Image
-          src={company.logoPath}
-          alt={company.shortName}
-          width={90}
-          height={40}
-          className="object-contain shrink-0"
-          priority
-        />
-      </div>
-
-      {/* ── Branded title bar ── */}
-      <div className="bg-zinc-900 text-white px-4 py-2 mb-6">
-        <h1 className="text-sm font-bold tracking-wide">Weekly Cleaning Schedule</h1>
-      </div>
+    <A4Page id="cleaning-schedule-document">
+      <DocumentHeader title="WEEKLY CLEANING SCHEDULE" />
 
       {/* ── Table ── */}
       <table className="w-full text-xs border-collapse mb-10">
         <thead>
-          <tr className="border-b-2 border-zinc-900">
-            <th className="text-left py-2 pr-3 font-semibold">Informal Settlement Area</th>
-            <th className="text-right py-2 px-2 font-semibold">No of Toilets</th>
-            <th className="text-left py-2 pl-2 font-semibold">Weekly Cleaning Dates</th>
+          <tr className="bg-zinc-100">
+            <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">Informal Settlement Area</th>
+            <th className="text-right py-1.5 px-2 font-semibold border border-zinc-300">No of Toilets</th>
+            <th className="text-left py-1.5 px-2 font-semibold border border-zinc-300">Weekly Cleaning Dates</th>
           </tr>
         </thead>
         <tbody>
           {allocationAreas.map((area) => (
-            <tr key={area.id} className="border-b border-zinc-200">
-              <td className="py-2 pr-3 text-zinc-800">{area.name}</td>
-              <td className="py-2 px-2 text-right">{area.toiletCount}</td>
-              <td className="py-2 pl-2 text-zinc-700">{cleaningDates}</td>
+            <tr key={area.id}>
+              <td className="py-1 px-2 border border-zinc-200 text-zinc-800">{area.name}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-right">{area.toiletCount}</td>
+              <td className="py-1 px-2 border border-zinc-200 text-zinc-700">{cleaningDates}</td>
             </tr>
           ))}
         </tbody>
@@ -106,6 +78,8 @@ export function CleaningScheduleDocument({
           <p className="border-t border-zinc-400 pt-0.5 mt-8 text-xs">Date</p>
         </div>
       </div>
-    </div>
+
+      <DocumentFooter />
+    </A4Page>
   );
 }

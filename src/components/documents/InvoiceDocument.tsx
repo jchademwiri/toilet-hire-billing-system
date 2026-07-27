@@ -2,6 +2,9 @@ import { invoices, allocations, billingPeriods, contract, fmt, fmtDate } from '@
 import { company } from '@/config/company';
 import Image from 'next/image';
 import type { computeAreaLines } from '@/lib/invoice-lines';
+import { A4Page } from './A4Page';
+import { DocumentHeader } from './DocumentHeader';
+import { DocumentFooter } from './DocumentFooter';
 
 // ── Invoice Document (A4 preview, EXACT Excel format) ────────────────────────
 
@@ -23,41 +26,8 @@ export function InvoiceDocument({
   const gross = subtotal + vat;
 
   return (
-    <div
-      id="invoice-document"
-      className="bg-white text-zinc-900 shadow-xl mx-auto"
-      style={{
-        width: '210mm',
-        minHeight: '297mm',
-        padding: '15mm 20mm',
-        fontFamily: 'var(--font-inter), Arial, sans-serif',
-        fontSize: '9pt',
-        lineHeight: '1.5',
-      }}
-    >
-      {/* ── Letterhead ── */}
-      <div className="flex justify-between items-start pb-3 mb-3">
-        <div className="text-xs text-zinc-700 leading-snug">
-          <p className="text-sm font-bold text-zinc-900">TAX INVOICE</p>
-          <p className="font-semibold text-zinc-900 mt-1">{company.name.toUpperCase()}</p>
-          <p>VAT No: {contract.vatNumber}</p>
-          {contract.addressLines.map((line) => <p key={line}>{line}</p>)}
-        </div>
-        <Image
-          src={company.logoPath}
-          alt={company.shortName}
-          width={110}
-          height={50}
-          className="object-contain shrink-0"
-          priority
-        />
-      </div>
-
-      {/* ── Branded title bar ── */}
-      <div className="flex justify-between items-center bg-zinc-900 text-white px-4 py-2 mb-3">
-        <h1 className="text-sm font-bold tracking-wide">{company.name.toUpperCase()}</h1>
-        <p className="text-sm font-bold">Tax Invoice</p>
-      </div>
+    <A4Page id="invoice-document">
+      <DocumentHeader title="TAX INVOICE" />
 
       {/* ── Contact + invoice meta row ── */}
       <div className="flex justify-between items-start text-xs mb-4">
@@ -154,7 +124,7 @@ export function InvoiceDocument({
               <td className="py-1.5 pr-4 text-zinc-600">VAT @ {contract.vatRate}%</td>
               <td className="py-1.5 text-right font-medium">{fmt(vat)}</td>
             </tr>
-            <tr className="bg-amber-500/90 text-white">
+            <tr>
               <td className="py-2 pr-4 font-bold">Gross Total</td>
               <td className="py-2 text-right font-bold">{fmt(gross)}</td>
             </tr>
@@ -194,12 +164,7 @@ export function InvoiceDocument({
         </div>
       </div>
 
-      {/* ── Footer contact bar ── */}
-      <div className="mt-10 pt-2 border-t border-zinc-300 text-[10px] text-zinc-500 flex justify-between">
-        <span>{contract.email}</span>
-        <span>{contract.website}</span>
-        <span>{contract.tel}</span>
-      </div>
-    </div>
+      <DocumentFooter />
+    </A4Page>
   );
 }

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { allocations, invoices } from '@/lib/mock-data';
 import PrintButton from '@/components/PrintButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
+import { PrintStyles } from '@/components/documents/PrintStyles';
 import { ArrowLeft } from 'lucide-react';
 import { EpwpEmployeeListDocument } from '@/components/documents/EpwpEmployeeListDocument';
 
@@ -61,19 +62,7 @@ export default async function EpwpEmployeeListPage({
         </div>
       </div>
 
-      {/* ── Print styles ── */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media print {
-          @page { margin: 0; size: A4; }
-          html, body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          nav, header, footer, aside, .print\\:hidden { display: none !important; }
-          #epwp-document {
-            visibility: visible;
-            box-shadow: none !important;
-            position: relative;
-          }
-        }
-      `}} />
+      <PrintStyles targetId="epwp-document" />
     </main>
   );
 }

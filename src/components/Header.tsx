@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { company } from '@/config/company';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 
@@ -9,9 +10,14 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo / Brand */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-zinc-900 dark:bg-white rounded flex items-center justify-center">
-              <span className="text-white dark:text-zinc-900 font-bold text-sm">{company.logoText}</span>
-            </div>
+            <Image
+              src={company.logoPath}
+              alt={company.shortName}
+              width={40}
+              height={18}
+              className="object-contain"
+              priority
+            />
             <div className="flex flex-col">
               <h1 className="text-lg font-bold text-zinc-900 dark:text-white">{company.shortName}</h1>
               <p className="text-xs text-zinc-600 dark:text-zinc-400">{company.tagline}</p>

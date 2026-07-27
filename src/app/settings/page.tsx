@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { contract, billingPeriods, fmtDate } from '@/lib/mock-data';
-import { Settings, DollarSign, CalendarDays, Building2, Check } from 'lucide-react';
+import { company } from '@/config/company';
+import { DollarSign, CalendarDays, Building2, Landmark, Check } from 'lucide-react';
 
 function Section({ title, icon: Icon, children }: {
   title: string; icon: React.ElementType; children: React.ReactNode;
@@ -68,7 +69,7 @@ export default function SettingsPage() {
               label="Standard rental rate (per toilet per day)"
               defaultValue={contract.rentalRate.toString()}
               type="number"
-              note="Confirmed: R11.50"
+              note={`Confirmed: R${contract.rentalRate.toFixed(2)}`}
             />
             <Field
               label="Disabled rental rate (per toilet per day)"
@@ -81,7 +82,7 @@ export default function SettingsPage() {
               label="Service rate (per toilet per service)"
               defaultValue={contract.serviceRate.toString()}
               type="number"
-              note="Confirmed: R96.50"
+              note={`Confirmed: R${contract.serviceRate.toFixed(2)}`}
             />
             <Field
               label="Relocation rate"
@@ -94,17 +95,44 @@ export default function SettingsPage() {
               label="VAT rate (%)"
               defaultValue={contract.vatRate.toString()}
               type="number"
-              note="Confirmed: 15%"
+              note={`Confirmed: ${contract.vatRate}%`}
             />
           </div>
         </Section>
 
         {/* Banking */}
-        <Section title="Banking details" icon={Building2}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <Field label="Bank name" defaultValue={contract.bankName} />
-            <Field label="Account number" defaultValue={contract.accountNumber} />
-            <Field label="Branch code" defaultValue={contract.branchCode} />
+        <Section title="Banking details" icon={Landmark}>
+          <p className="text-xs text-muted-foreground mb-4">
+            Banking details shown on invoices and statements. Edit and save to update across all documents.
+          </p>
+          <div className="rounded-lg border border-border overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/40">
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-48">Field</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Value</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  { label: 'Account Holder', key: 'accountHolder', defaultValue: company.name },
+                  { label: 'Bank', key: 'bankName', defaultValue: contract.bankName },
+                  { label: 'Account Number', key: 'accountNumber', defaultValue: contract.accountNumber },
+                  { label: 'Branch Code', key: 'branchCode', defaultValue: contract.branchCode },
+                ].map((row) => (
+                  <tr key={row.key} className="hover:bg-muted/30 transition">
+                    <td className="px-4 py-3 font-medium text-foreground">{row.label}</td>
+                    <td className="px-4 py-3">
+                      <input
+                        type="text"
+                        defaultValue={row.defaultValue}
+                        className="w-full rounded border border-input bg-background px-2.5 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </Section>
 

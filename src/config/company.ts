@@ -7,8 +7,10 @@
 
 export const company = {
   /* ── Brand identity ──────────────────────────────────────────────────── */
-  /** Short logo text shown in the header/sidebar logo blocks */
-  logoText: 'HS',
+  /** Path to the brand logo image in public/ (e.g. '/stp-logo.png') */
+  logoPath: '/stp-logo.png',
+  /** Path to the company signature image in public/ (e.g. '/muzi-signature.png') */
+  signaturePath: '/muzi-signature.png',
   /** Display brand name (e.g. project code) */
   shortName: 'HS02',
   /** Tagline shown beneath the brand name */
@@ -16,7 +18,7 @@ export const company = {
 
   /* ── Public-facing company / contract info ───────────────────────────── */
   /** Your company / contracting entity name */
-  name: 'Sithembe Transportation and Projects',
+  name: 'Sithembe Transportation and Projects (Pty) Ltd',
   /** The client you are billing on behalf of */
   client: 'City of Tshwane',
   /** Contract reference displayed throughout the UI */

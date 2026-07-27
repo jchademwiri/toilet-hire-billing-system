@@ -6,7 +6,7 @@ import {
 } from '@/lib/mock-data';
 import {
   ArrowLeft, MapPin, Users, CalendarDays, FileText,
-  CheckCircle2, Clock, ChevronRight, Toilet,
+  CheckCircle2, ClipboardCheck, Clock, ChevronRight, Toilet,
 } from 'lucide-react';
 
 function StatusBadge({ status }: { status: string }) {
@@ -146,6 +146,41 @@ export default async function AllocationDetailPage({ params }: { params: Promise
               ) : (
                 <p className="text-xs text-muted-foreground">Not configured yet.</p>
               )}
+            </div>
+
+            {/* Documents */}
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
+              <div className="px-5 py-4 border-b border-border bg-muted/30">
+                <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-muted-foreground" />Documents
+                </h2>
+              </div>
+              <div className="divide-y divide-border">
+                <Link
+                  href={`/service-notes/${id}`}
+                  className="flex items-center gap-3 px-5 py-3 hover:bg-muted/30 transition group"
+                >
+                  <ClipboardCheck className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span className="text-xs font-medium text-foreground">Service Notes</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition" />
+                </Link>
+                <Link
+                  href={`/coordinates/${id}`}
+                  className="flex items-center gap-3 px-5 py-3 hover:bg-muted/30 transition group"
+                >
+                  <MapPin className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span className="text-xs font-medium text-foreground">GPS Coordinates</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition" />
+                </Link>
+                <Link
+                  href={`/service-schedule/${id}`}
+                  className="flex items-center gap-3 px-5 py-3 hover:bg-muted/30 transition group"
+                >
+                  <CalendarDays className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span className="text-xs font-medium text-foreground">Service Schedule</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition" />
+                </Link>
+              </div>
             </div>
 
             {/* Invoices */}

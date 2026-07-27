@@ -1,4 +1,4 @@
-import { sageSyncLog, invoices, fmt, fmtDate } from '@/lib/mock-data';
+import { sageSyncLog, invoices, allocations, payments, fmt, fmtDate } from '@/lib/mock-data';
 import { ClipboardList, CheckCircle2, XCircle, Plus, CreditCard, FileText } from 'lucide-react';
 
 // Extended activity log combining sync data with generated events
@@ -19,43 +19,25 @@ const activities = [
     detail: `${log.invoiceNumber} — amount ${log.newGross ? fmt(log.newGross) : '—'}`,
     status: log.status === 'SUCCESS' ? 'success' as const : 'failed' as const,
   })),
-  // Payment events
-  {
-    id: 'pay-001',
-    timestamp: '2026-06-18T10:30:00Z',
-    action: 'Payment recorded' as const,
-    detail: 'INV-2026-0041 — R100,533.00 received',
-    status: 'success' as const,
-  },
-  {
-    id: 'pay-002',
-    timestamp: '2026-06-18T10:31:00Z',
-    action: 'Payment recorded' as const,
-    detail: 'INV-2026-0042 — R67,022.00 received',
-    status: 'success' as const,
-  },
-  // Allocation events
-  {
-    id: 'alloc-001',
-    timestamp: '2026-03-01T09:00:00Z',
+  // Payment events — derived from mock-data payments
+  ...payments.map((p) => {
+    const inv = invoices.find((i) => i.id === p.invoiceId);
+    return {
+      id: `pay-${p.id}`,
+      timestamp: `${p.receivedAt}T10:30:00Z`,
+      action: 'Payment recorded' as const,
+      detail: `${inv?.invoiceNumber ?? 'Unknown'} — ${fmt(p.amount)} received`,
+      status: 'success' as const,
+    };
+  }),
+  // Allocation events — derived from mock-data allocations
+  ...allocations.map((a) => ({
+    id: `alloc-${a.id}`,
+    timestamp: `${a.deliveryDate}T09:00:00Z`,
     action: 'Allocation created' as const,
-    detail: 'Region 2 — 120 toilets — delivered 1 Mar 2026',
+    detail: `${a.regionName} — ${a.totalToilets} toilets — delivered ${fmtDate(a.deliveryDate)}`,
     status: 'info' as const,
-  },
-  {
-    id: 'alloc-002',
-    timestamp: '2026-03-15T09:00:00Z',
-    action: 'Allocation created' as const,
-    detail: 'Region 5 — Site 1 — 80 toilets — delivered 15 Mar 2026',
-    status: 'info' as const,
-  },
-  {
-    id: 'alloc-003',
-    timestamp: '2026-04-01T09:00:00Z',
-    action: 'Allocation created' as const,
-    detail: 'Region 5 — Leeuwfontein — 60 toilets — delivered 1 Apr 2026',
-    status: 'info' as const,
-  },
+  })),
 ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
 function ActivityIcon({ action, status }: { action: string; status: string }) {

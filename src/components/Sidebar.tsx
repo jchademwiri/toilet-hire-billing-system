@@ -2,15 +2,13 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { company } from '@/config/company';
 import {
   LayoutDashboard,
   Package,
   DollarSign,
-  MapPin,
-  Users,
   Briefcase,
-  BarChart3,
   Send,
   Settings,
   ChevronDown,
@@ -30,7 +28,17 @@ const navigation = [
     items: [
       { label: 'Allocations', href: '/allocations' },
       { label: 'New Allocation', href: '/allocations/new' },
+    ],
+  },
+  {
+    label: 'Billing',
+    icon: DollarSign,
+    items: [
       { label: 'Billing Hub', href: '/billing' },
+      { label: 'Service Notes', href: '/service-notes' },
+      { label: 'Invoices', href: '/invoices' },
+      { label: 'Payments', href: '/payments' },
+      { label: 'Statement', href: '/statement' },
     ],
   },
   {
@@ -40,15 +48,6 @@ const navigation = [
       { label: 'Regions', href: '/regions' },
       { label: 'Coordinators', href: '/coordinators' },
       { label: 'Employees', href: '/employees' },
-    ],
-  },
-  {
-    label: 'Reporting',
-    icon: BarChart3,
-    items: [
-      { label: 'Invoices', href: '/invoices' },
-      { label: 'Payments', href: '/payments' },
-      { label: 'Aging Report', href: '/aging' },
     ],
   },
   {
@@ -147,9 +146,14 @@ export default function Sidebar() {
       <div className="px-4 py-6 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
         {!isCollapsed && (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-zinc-900 dark:bg-white rounded flex items-center justify-center shrink-0">
-              <span className="text-white dark:text-zinc-900 font-bold text-sm">{company.logoText}</span>
-            </div>
+            <Image
+              src={company.logoPath}
+              alt={company.shortName}
+              width={36}
+              height={16}
+              className="object-contain shrink-0"
+              priority
+            />
             <div>
               <h2 className="font-bold text-zinc-900 dark:text-white text-sm">{company.shortName}</h2>
               <p className="text-xs text-zinc-600 dark:text-zinc-400">{company.tagline}</p>
@@ -158,9 +162,14 @@ export default function Sidebar() {
         )}
         {isCollapsed && (
           <div className="w-full flex items-center justify-center">
-            <div className="w-8 h-8 bg-zinc-900 dark:bg-white rounded flex items-center justify-center shrink-0">
-              <span className="text-white dark:text-zinc-900 font-bold text-sm">{company.logoText}</span>
-            </div>
+            <Image
+              src={company.logoPath}
+              alt={company.shortName}
+              width={28}
+              height={13}
+              className="object-contain shrink-0"
+              priority
+            />
           </div>
         )}
         <button

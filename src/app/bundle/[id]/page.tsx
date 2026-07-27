@@ -63,17 +63,17 @@ export default async function DocumentBundlePage({
           <div className="bundle-page">
             <InvoiceDocument invoice={invoice} allocation={allocation} period={period} lines={lines} />
           </div>
-          <div className="bundle-page">
-            <ServiceNotesDocument allocationId={allocation.id} />
+          <div className="bundle-page landscape">
+            <ServiceNotesDocument allocationId={allocation.id} invoiceId={id} />
           </div>
           <div className="bundle-page">
-            <CleaningScheduleDocument allocationId={allocation.id} />
+            <CleaningScheduleDocument allocationId={allocation.id} invoiceId={id} />
           </div>
           <div className="bundle-page">
-            <EpwpEmployeeListDocument allocationId={allocation.id} />
+            <EpwpEmployeeListDocument allocationId={allocation.id} invoiceId={id} />
           </div>
           <div className="bundle-page">
-            <CoordinatesDocument allocationId={allocation.id} />
+            <CoordinatesDocument allocationId={allocation.id} invoiceId={id} />
           </div>
         </div>
 
@@ -88,9 +88,13 @@ export default async function DocumentBundlePage({
       </div>
 
       {/* ── Print styles: one section per printed page ── */}
+      {/* Service Notes renders as a 297×210mm landscape page — give it its own
+          named @page so it prints on landscape paper instead of being clipped
+          onto the portrait A4 default, matching its standalone route. */}
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
           @page { margin: 0; size: A4; }
+          @page landscape { margin: 0; size: A4 landscape; }
           html, body { background: white !important; margin: 0 !important; padding: 0 !important; }
           body * { visibility: hidden; }
           #document-bundle, #document-bundle * { visibility: visible; }
@@ -105,6 +109,9 @@ export default async function DocumentBundlePage({
           }
           .bundle-page:last-child {
             page-break-after: auto;
+          }
+          .bundle-page.landscape {
+            page: landscape;
           }
         }
       `}} />

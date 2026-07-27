@@ -12,19 +12,28 @@ import { ArrowLeft } from 'lucide-react';
 
 // ── A4 Service Notes Document (EXACT Excel format) ──────────────────────────
 
-export function ServiceNotesDocument({ allocationId }: { allocationId: string }) {
+export function ServiceNotesDocument({
+  allocationId,
+  invoiceId,
+}: {
+  allocationId: string;
+  /** Pin the document to a specific invoice's period (e.g. from the Document Bundle).
+   *  Falls back to the allocation's latest invoice when omitted. */
+  invoiceId?: string;
+}) {
   const allocation = allocations.find((a) => a.id === allocationId);
   if (!allocation) return null;
 
   const allocationAreas = areas.filter((a) => a.allocationId === allocationId);
 
-  // Latest invoice for this allocation → signature/document date + period label
+  // Selected invoice for this allocation → signature/document date + period label
   const allocInvoices = invoices
     .filter((i) => i.allocationId === allocationId)
     .sort((a, b) => new Date(b.invoiceDate).getTime() - new Date(a.invoiceDate).getTime());
-  const latestInvoice = allocInvoices[0];
-  const docDate = latestInvoice?.invoiceDate ?? allocation.deliveryDate;
-  const latestPeriod = billingPeriods.find((p) => p.id === latestInvoice?.billingPeriodId);
+  const selectedInvoice = (invoiceId ? invoices.find((i) => i.id === invoiceId) : undefined)
+    ?? allocInvoices[0];
+  const docDate = selectedInvoice?.invoiceDate ?? allocation.deliveryDate;
+  const latestPeriod = billingPeriods.find((p) => p.id === selectedInvoice?.billingPeriodId);
 
   // Compute the actual service dates within the latest billing period —
   // one column per date, matching the real Service Notes layout exactly.

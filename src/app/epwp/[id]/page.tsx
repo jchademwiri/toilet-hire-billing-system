@@ -15,7 +15,15 @@ import { ArrowLeft } from 'lucide-react';
 // See docs/HS02-Data-Handling-POPIA.md — the ID number is sourced from the
 // separate, restricted `employeeIdNumbers` table, never from `employees`.
 
-export function EpwpEmployeeListDocument({ allocationId }: { allocationId: string }) {
+export function EpwpEmployeeListDocument({
+  allocationId,
+  invoiceId,
+}: {
+  allocationId: string;
+  /** Pin the signature date to a specific invoice (e.g. from the Document Bundle).
+   *  Falls back to the allocation's latest invoice when omitted. */
+  invoiceId?: string;
+}) {
   const allocation = allocations.find((a) => a.id === allocationId);
   if (!allocation) return null;
 
@@ -26,7 +34,9 @@ export function EpwpEmployeeListDocument({ allocationId }: { allocationId: strin
   const allocInvoices = invoices
     .filter((i) => i.allocationId === allocationId)
     .sort((a, b) => new Date(b.invoiceDate).getTime() - new Date(a.invoiceDate).getTime());
-  const docDate = allocInvoices[0]?.invoiceDate ?? allocation.deliveryDate;
+  const selectedInvoice = (invoiceId ? invoices.find((i) => i.id === invoiceId) : undefined)
+    ?? allocInvoices[0];
+  const docDate = selectedInvoice?.invoiceDate ?? allocation.deliveryDate;
 
   return (
     <div

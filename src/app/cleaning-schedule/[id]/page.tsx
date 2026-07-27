@@ -11,7 +11,15 @@ import { ArrowLeft } from 'lucide-react';
 
 // ── A4 Weekly Cleaning Schedule Document (EXACT Excel format) ───────────────
 
-export function CleaningScheduleDocument({ allocationId }: { allocationId: string }) {
+export function CleaningScheduleDocument({
+  allocationId,
+  invoiceId,
+}: {
+  allocationId: string;
+  /** Pin the signature date to a specific invoice (e.g. from the Document Bundle).
+   *  Falls back to the allocation's latest invoice when omitted. */
+  invoiceId?: string;
+}) {
   const allocation = allocations.find((a) => a.id === allocationId);
   if (!allocation) return null;
 
@@ -22,7 +30,9 @@ export function CleaningScheduleDocument({ allocationId }: { allocationId: strin
   const allocInvoices = invoices
     .filter((i) => i.allocationId === allocationId)
     .sort((a, b) => new Date(b.invoiceDate).getTime() - new Date(a.invoiceDate).getTime());
-  const docDate = allocInvoices[0]?.invoiceDate ?? allocation.deliveryDate;
+  const selectedInvoice = (invoiceId ? invoices.find((i) => i.id === invoiceId) : undefined)
+    ?? allocInvoices[0];
+  const docDate = selectedInvoice?.invoiceDate ?? allocation.deliveryDate;
 
   return (
     <div

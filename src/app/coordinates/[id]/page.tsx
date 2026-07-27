@@ -58,22 +58,31 @@ function generateToiletNumbers(area: typeof areas[number]) {
 
 // ── A4 GPS Coordinates Document ──────────────────────────────────────────────
 
-export function CoordinatesDocument({ allocationId }: { allocationId: string }) {
+export function CoordinatesDocument({
+  allocationId,
+  invoiceId,
+}: {
+  allocationId: string;
+  /** Pin the document to a specific invoice's period (e.g. from the Document Bundle).
+   *  Falls back to the allocation's latest invoice when omitted. */
+  invoiceId?: string;
+}) {
   const allocation = allocations.find((a) => a.id === allocationId);
   if (!allocation) return null;
 
   const allocationAreas = areas.filter((a) => a.allocationId === allocationId);
   const region = regions.find((r) => r.id === allocation.regionId);
 
-  // Latest invoice for this allocation → signature date
+  // Selected invoice for this allocation → signature date
   const allocInvoices = invoices
     .filter((i) => i.allocationId === allocationId)
     .sort((a, b) => new Date(b.invoiceDate).getTime() - new Date(a.invoiceDate).getTime());
-  const latestInvoice = allocInvoices[0];
-  const docDate = latestInvoice?.invoiceDate ?? allocation.deliveryDate;
+  const selectedInvoice = (invoiceId ? invoices.find((i) => i.id === invoiceId) : undefined)
+    ?? allocInvoices[0];
+  const docDate = selectedInvoice?.invoiceDate ?? allocation.deliveryDate;
 
-  // Derive service period label from the latest invoice's billing period
-  const latestPeriod = billingPeriods.find((p) => p.id === latestInvoice?.billingPeriodId);
+  // Derive service period label from the selected invoice's billing period
+  const latestPeriod = billingPeriods.find((p) => p.id === selectedInvoice?.billingPeriodId);
   const servicePeriodLabel = latestPeriod
     ? `${new Date(latestPeriod.periodStart).toLocaleDateString('en-ZA', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()} TO ${new Date(latestPeriod.periodEnd).toLocaleDateString('en-ZA', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}`
     : '';

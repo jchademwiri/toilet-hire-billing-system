@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { allocations, invoices } from '@/lib/mock-data';
 import PrintButton from '@/components/PrintButton';
+import { ExportPdfButton } from '@/components/ExportPdfButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
 import { PrintStyles } from '@/components/documents/PrintStyles';
 import { StatementDocument } from '@/components/documents/StatementDocument';
@@ -36,6 +37,11 @@ export default async function AllocationStatementPage({
         </Link>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted-foreground">{allocation.regionName}</span>
+          <ExportPdfButton
+            elementId="statement-document"
+            fileName={`Statement-${allocation.regionName.replace(/\s+/g, '-')}`}
+            label="Download PDF"
+          />
           <PrintButton />
         </div>
       </div>

@@ -2,9 +2,29 @@
 // Mock data — mirrors the full Drizzle schema from docs/HS02-Billing-System-Spec-v3.md
 // Data sourced from actual Tshwane-approved Excel workbooks in docs/excel-sheets/
 // Replace each entity with real DB queries once the schema migration is done.
+//
+// EVERY export is validated through Zod schemas at the module boundary so the
+// rest of the app (engine functions, pages, documents) always receives data
+// that conforms to the canonical domain types.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const contract = {
+import {
+  ContractSchema,
+  RegionSchema,
+  CotCoordinatorSchema,
+  AllocationSchema,
+  AreaSchema,
+  EmployeeSchema,
+  ServiceScheduleSchema,
+  BillingPeriodSchema,
+  InvoiceSchema,
+  PaymentSchema,
+  SageSyncLogSchema,
+} from '@/engine/lib/schemas';
+
+// ── Raw data (validated below before export) ─────────────────────────────────
+
+const rawContract = {
   id: 'c-001',
   reference: 'HS 02-2025/26',
   client: 'City of Tshwane',
@@ -37,7 +57,7 @@ export const contract = {
   clientTel: '012 358 3368',
 };
 
-export const regions = [
+const rawRegions = [
   { id: 'r-001', contractId: 'c-001', name: 'Region 1' },
   { id: 'r-002', contractId: 'c-001', name: 'Region 2' },
   { id: 'r-003', contractId: 'c-001', name: 'Region 3' },
@@ -47,7 +67,7 @@ export const regions = [
   { id: 'r-007', contractId: 'c-001', name: 'Region 7' },
 ];
 
-export const cotCoordinators = [
+const rawCotCoordinators = [
   { id: 'cc-001', regionId: 'r-002', fullname: 'Thoko Maluka', cellphone: '082 111 2222', email: 'tmaluka@tshwane.gov.za' },
   { id: 'cc-002', regionId: 'r-005', fullname: 'Johannes Mtshweni', cellphone: '083 333 4444', email: 'jmtshweni@tshwane.gov.za' },
   { id: 'cc-003', regionId: 'r-005', fullname: 'Sipho Mokoena', cellphone: '071 555 6666', email: 'smokoena@tshwane.gov.za' },
@@ -58,7 +78,7 @@ export const cotCoordinators = [
   { id: 'cc-008', regionId: 'r-007', fullname: 'Refilwe Mogale', cellphone: '076 111 2222', email: 'rmogale@tshwane.gov.za' },
 ];
 
-export const allocations = [
+const rawAllocations = [
   {
     id: 'a-001',
     regionId: 'r-002',
@@ -94,7 +114,7 @@ export const allocations = [
 // ── Real areas from actual July 2026 invoices ────────────────────────────────
 // Source: docs/excel-sheets/
 // GPS co-ordinates are approximate (decimal) for the area locations near Tshwane
-export const areas = [
+const rawAreas = [
   // Region 2 — 13 areas, 596 toilets total
   // rowNumber matches the actual row numbering used on the Tshwane-approved invoice
   // (source skips 2 and 5 — areas removed from the contract before this numbering was fixed).
@@ -122,7 +142,7 @@ export const areas = [
   { id: 'ar-018', allocationId: 'a-003', name: 'Leeuwfontein Ext 32 (Phase 2)', toiletCount: 10, siteCoordinatorId: 'e-017', lat: -25.7700, lng: 28.4520, rowNumber: 2 },
 ];
 
-export const employees = [
+const rawEmployees = [
   // Region 2 — Site coordinators (one per area)
   { id: 'e-001', areaId: 'ar-001', fullname: 'Moses Sithole',   position: 'Coordinator' as const },
   { id: 'e-002', areaId: 'ar-002', fullname: 'Patricia Mokoena', position: 'Coordinator' as const },
@@ -180,16 +200,16 @@ export const employees = [
 // real ID numbers — replace via the restricted table once the real migration
 // runs (see HS02-Data-Handling-POPIA.md).
 export const employeeIdNumbers: Record<string, string> = Object.fromEntries(
-  employees.map((e, i) => [e.id, `${8000000000000 + i * 137}`]),
+  rawEmployees.map((e, i) => [e.id, `${8000000000000 + i * 137}`]),
 );
 
-export const serviceSchedules = [
-  { id: 'ss-001', allocationId: 'a-001', day1: 'Monday',   day2: 'Thursday',  effectiveFrom: '2026-03-01', effectiveTo: null },
-  { id: 'ss-002', allocationId: 'a-002', day1: 'Tuesday',  day2: 'Friday',    effectiveFrom: '2026-03-15', effectiveTo: null },
-  { id: 'ss-003', allocationId: 'a-003', day1: 'Wednesday', day2: 'Friday',    effectiveFrom: '2026-07-01', effectiveTo: null },
+const rawServiceSchedules = [
+  { id: 'ss-001', allocationId: 'a-001', day1: 'Monday' as const,   day2: 'Thursday' as const,  effectiveFrom: '2026-03-01', effectiveTo: null },
+  { id: 'ss-002', allocationId: 'a-002', day1: 'Tuesday' as const,  day2: 'Friday' as const,    effectiveFrom: '2026-03-15', effectiveTo: null },
+  { id: 'ss-003', allocationId: 'a-003', day1: 'Wednesday' as const, day2: 'Friday' as const,    effectiveFrom: '2026-07-01', effectiveTo: null },
 ];
 
-export const billingPeriods = [
+const rawBillingPeriods = [
   { id: 'bp-001', label: 'Mar 2026', periodStart: '2026-03-01', periodEnd: '2026-03-25', isManualOverride: false },
   { id: 'bp-002', label: 'Apr 2026', periodStart: '2026-03-26', periodEnd: '2026-04-25', isManualOverride: false },
   { id: 'bp-003', label: 'May 2026', periodStart: '2026-04-26', periodEnd: '2026-05-25', isManualOverride: false },
@@ -199,11 +219,7 @@ export const billingPeriods = [
 
 // ── Real invoices from actual Excel workbooks ───────────────────────────────
 // Source: docs/excel-sheets/ (May, June, July folders)
-//
-// May 2026:   STP-INV-26-0377/0378
-// Jun 2026:   STP-INV-26-0388/0389
-// Jul 2026:   STP-INV-26-0396/0397/0398
-export const invoices = [
+const rawInvoices = [
   // ── March 2026 (period 1 Mar – 25 Mar — first month, fully paid) ──
   {
     id: 'inv-009',
@@ -233,7 +249,6 @@ export const invoices = [
     paymentStatus: 'PAID' as const,
     sageSyncedAt: '2026-03-26T09:15:00Z',
   },
-
   // ── May 2026 (period 26 Apr – 25 May) ──
   {
     id: 'inv-001',
@@ -263,7 +278,6 @@ export const invoices = [
     paymentStatus: 'OUTSTANDING' as const,
     sageSyncedAt: null,
   },
-
   // ── June 2026 (period 26 May – 30 Jun, manual override for CoT year-end) ──
   {
     id: 'inv-003',
@@ -293,8 +307,6 @@ export const invoices = [
     paymentStatus: 'OUTSTANDING' as const,
     sageSyncedAt: null,
   },
-
-
   // ── July 2026 (period 1 Jul – 25 Jul, manual override) ──
   {
     id: 'inv-006',
@@ -340,12 +352,12 @@ export const invoices = [
   },
 ];
 
-export const payments = [
+const rawPayments = [
   { id: 'pay-001', invoiceId: 'inv-009', amount: 660040.20, receivedAt: '2026-04-15' },
   { id: 'pay-002', invoiceId: 'inv-010', amount: 38760.75, receivedAt: '2026-04-15' },
 ];
 
-export const sageSyncLog = [
+const rawSageSyncLog = [
   {
     id: 'sl-005',
     invoiceId: 'inv-009',
@@ -383,6 +395,23 @@ export const sageSyncLog = [
     syncedAt: '2026-07-01T10:03:00Z',
   },
 ];
+
+// ── Zod-validated exports ────────────────────────────────────────────────────
+// Every consumer (engine functions, pages, documents) receives data that has
+// been validated against the canonical schema. If any raw record deviates,
+// the parse will throw loudly at import time rather than causing silent bugs.
+
+export const contract = ContractSchema.parse(rawContract);
+export const regions = rawRegions.map((r) => RegionSchema.parse(r));
+export const cotCoordinators = rawCotCoordinators.map((c) => CotCoordinatorSchema.parse(c));
+export const allocations = rawAllocations.map((a) => AllocationSchema.parse(a));
+export const areas = rawAreas.map((a) => AreaSchema.parse(a));
+export const employees = rawEmployees.map((e) => EmployeeSchema.parse(e));
+export const serviceSchedules = rawServiceSchedules.map((s) => ServiceScheduleSchema.parse(s));
+export const billingPeriods = rawBillingPeriods.map((p) => BillingPeriodSchema.parse(p));
+export const invoices = rawInvoices.map((i) => InvoiceSchema.parse(i));
+export const payments = rawPayments.map((p) => PaymentSchema.parse(p));
+export const sageSyncLog = rawSageSyncLog.map((l) => SageSyncLogSchema.parse(l));
 
 // ── Derived helpers ───────────────────────────────────────────────────────────
 

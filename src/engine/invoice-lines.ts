@@ -48,4 +48,4 @@ export function computeAreaLines(allocationId: string, periodId: string) {
   });
 }
 
-export type AreaLine = ReturnType<typeof computeAreaLines>[number];
+export type { AreaLine } from './lib/schemas';

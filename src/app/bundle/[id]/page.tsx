@@ -4,6 +4,7 @@ import {
   invoices, allocations, billingPeriods,
 } from '@/lib/mock-data';
 import PrintButton from '@/components/PrintButton';
+import { ExportPdfButton } from '@/components/ExportPdfButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
 import { BundlePrintStyles } from '@/components/documents/PrintStyles';
 import { ArrowLeft } from 'lucide-react';
@@ -58,6 +59,11 @@ export default async function DocumentBundlePage({
           <span className="text-xs text-muted-foreground">
             {allocation.regionName} &middot; {invoice.invoiceNumber ?? 'Draft'}
           </span>
+          <ExportPdfButton
+            elementId="document-bundle"
+            fileName={`Bundle-${invoice.invoiceNumber ?? invoice.id}`}
+            label="Download PDF"
+          />
           <PrintButton />
         </div>
       </div>

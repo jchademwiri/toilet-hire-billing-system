@@ -3,6 +3,7 @@ import {
   contract, fmtDate,
 } from '@/lib/mock-data';
 import { company } from '@/config/company';
+import { computeServiceDates } from '@/engine/pdf';
 import Image from 'next/image';
 import { A4Page } from './A4Page';
 import { DocumentHeader } from './DocumentHeader';
@@ -33,30 +34,11 @@ export function ServiceNotesDocument({
   const docDate = selectedInvoice?.invoiceDate ?? allocation.deliveryDate;
   const latestPeriod = billingPeriods.find((p) => p.id === selectedInvoice?.billingPeriodId);
 
-  // Compute the actual service dates within the latest billing period —
-  // one column per date, matching the real Service Notes layout exactly.
+  // Compute service dates using the engine function
   const schedule = serviceSchedules.find((s) => s.allocationId === allocationId);
-  const dayMap: Record<string, number> = {
-    Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6,
-  };
-  const dayNames = Object.fromEntries(Object.entries(dayMap).map(([name, n]) => [n, name]));
-  const serviceDates: { date: string; dayName: string }[] = [];
-  if (schedule && latestPeriod) {
-    const targets = [dayMap[schedule.day1], dayMap[schedule.day2]].filter((d) => d !== undefined);
-    // `periodStart`/`periodEnd` are YYYY-MM-DD, parsed as UTC midnight — use UTC accessors
-    // throughout so the weekday and printed date stay in sync regardless of server timezone.
-    const cursor = new Date(latestPeriod.periodStart);
-    const end = new Date(latestPeriod.periodEnd);
-    while (cursor <= end) {
-      if (targets.includes(cursor.getUTCDay())) {
-        serviceDates.push({
-          date: cursor.toISOString().split('T')[0],
-          dayName: dayNames[cursor.getUTCDay()].toUpperCase(),
-        });
-      }
-      cursor.setUTCDate(cursor.getUTCDate() + 1);
-    }
-  }
+  const serviceDates = schedule && latestPeriod
+    ? computeServiceDates(schedule.day1, schedule.day2, latestPeriod.periodStart, latestPeriod.periodEnd)
+    : [];
 
   return (
     <A4Page id="service-notes-document" orientation="landscape">

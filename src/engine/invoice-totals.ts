@@ -1,5 +1,5 @@
 import { contract } from '@/lib/mock-data';
-import type { AreaLine } from './invoice-lines';
+import type { AreaLine } from './lib/schemas';
 
 // ── Rolls per-area lines into an invoice's subtotal/VAT/gross ───────────────
 // Used by the Tax Invoice document and the billing hub preview, so the VAT

@@ -3,56 +3,10 @@ import {
 } from '@/lib/mock-data';
 import { company } from '@/config/company';
 import Image from 'next/image';
+import { toDMS, generateToiletNumbers } from '@/engine/pdf';
 import { A4Page } from './A4Page';
 import { DocumentHeader } from './DocumentHeader';
 import { DocumentFooter } from './DocumentFooter';
-
-// ── Helper: DMS formatting ───────────────────────────────────────────────────
-
-function toDMS(lat: number, lng: number) {
-  const latDir = lat >= 0 ? 'N' : 'S';
-  const lngDir = lng >= 0 ? 'E' : 'W';
-  const absLat = Math.abs(lat);
-  const absLng = Math.abs(lng);
-
-  const latDeg = Math.floor(absLat);
-  const latMin = Math.floor((absLat - latDeg) * 60);
-  const latSec = ((absLat - latDeg - latMin / 60) * 3600).toFixed(1);
-
-  const lngDeg = Math.floor(absLng);
-  const lngMin = Math.floor((absLng - lngDeg) * 60);
-  const lngSec = ((absLng - lngDeg - lngMin / 60) * 3600).toFixed(1);
-
-  return `${latDeg}°${latMin}'${latSec}"${latDir} ${lngDeg}°${lngMin}'${lngSec}"${lngDir}`;
-}
-
-// ── Generate realistic toilet numbers ────────────────────────────────────────
-
-function generateToiletNumbers(area: typeof areas[number]) {
-  // Use a base number range per area so they look realistic
-  const bases: Record<string, number> = {
-    'ar-001': 98,
-    'ar-002': 106,
-    'ar-003': 114,
-    'ar-004': 144,
-    'ar-005': 304,
-    'ar-006': 354,
-    'ar-007': 414,
-    'ar-008': 424,
-    'ar-009': 464,
-    'ar-010': 467,
-    'ar-011': 537,
-    'ar-012': 617,
-    'ar-013': 676,
-    'ar-014': 484,
-    'ar-015': 507,
-    'ar-016': 508,
-    'ar-017': 651,
-    'ar-018': 661,
-  };
-  const base = bases[area.id] ?? 1;
-  return Array.from({ length: area.toiletCount }, (_, i) => base + i);
-}
 
 // ── A4 GPS Co-ordinates Document ─────────────────────────────────────────────
 
@@ -89,7 +43,7 @@ export function CoordinatesDocument({
       {/* ── Per-area sections, each on a new page ── */}
       {allocationAreas.map((area) => {
         const coord = toDMS(area.lat, area.lng);
-        const toiletNums = generateToiletNumbers(area);
+        const toiletNums = generateToiletNumbers(area.id, area.toiletCount);
         return (
           <A4Page key={area.id} pageBreakAfter>
             <DocumentHeader title="GPS CO-ORDINATES" context={area.name} />

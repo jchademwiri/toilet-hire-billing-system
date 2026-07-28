@@ -4,6 +4,7 @@ import {
   invoices, payments, billingPeriods, allocations, fmt, fmtDate,
 } from '@/lib/mock-data';
 import PrintButton from '@/components/PrintButton';
+import { ExportPdfButton } from '@/components/ExportPdfButton';
 import DocumentSidebar from '@/components/DocumentSidebar';
 import { PrintStyles } from '@/components/documents/PrintStyles';
 import { ArrowLeft, CheckCircle2, AlertCircle, Clock, RefreshCw } from 'lucide-react';
@@ -63,6 +64,11 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         </Link>
         <div className="flex items-center gap-3">
           <StatusBadge status={invoice.paymentStatus} />
+          <ExportPdfButton
+            pdfUrl={`/api/billing/pdf/invoice/${id}`}
+            fileName={`Invoice-${invoice.invoiceNumber ?? invoice.id}`}
+            label="Download PDF"
+          />
           <PrintButton />
         </div>
       </div>
